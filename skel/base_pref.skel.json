@@ -1,0 +1,304 @@
+{
+  "_auto":"merged",
+  "alternate_error_pages": {
+    "enabled": false
+  },
+  "autofill": {
+    "credit_card_enabled": false,
+    "profile_enabled": false
+  },
+  "credentials_enable_service": false,
+
+  "enable_do_not_track": true,
+  "history": {
+    "saving_disabled": false
+  },
+  "intl": {
+    "selected_languages": "en-US,en"
+  },
+  "payments": {
+    "can_make_payment_enabled": false
+  },
+  "search": {
+    "suggest_enabled": true
+  },
+  "signin": {
+    "allowed": false
+  },
+  "spellcheck": {
+    "dictionaries": [
+      "en-US"
+    ]
+  },
+  "translate": {
+    "enabled": false
+  },
+  "vivaldi": {
+    "address_bar": {
+      "extensions": {
+        "render_in_dropdown": true,
+        "show_all_toggle": false
+      },
+      "omnibox": {
+        "bookmarks": true
+      }
+    },
+    "appearance": {
+      "force_dark_mode_theme": true
+    },
+    "bookmarks": {
+      "bar": {
+        "visible": true
+      },
+      "open_in_new_tab": true,
+      "single_click_opens": true
+    },
+    "downloads": {
+      "open_panel_on_new": false,
+      "start_automatically": false
+    },
+    "features": {
+      "calendar": false,
+      "feeds": false,
+      "mail": false
+    },
+    "history": {
+      "days_to_keep_visits": 31
+    },
+    "homepage": "about:blank",
+    "keyboard": {
+      "shortcuts": {
+        "enable": true
+      }
+    },
+    "mouse_gestures": {
+      "enabled": false,
+      "rocker_gestures": {
+        "enabled": false
+      }
+    },
+    "menu": {
+      "display": 0,
+      "compact": true,
+      "icon_type": 1
+    },
+    "panels": {
+      "web": {
+        "elements": []
+      },
+
+      "window_defaults": {
+        "barVisible": true,
+        "contentVisible": false,
+        "selectedPanel": "PanelHistory",
+        "width": 400
+      }
+    },
+    "tabs": {
+      "always_load_pinned_after_restore": false,
+      "new_page": {
+        "link": 2
+      },
+      "new_placement": 1,
+      "open_new_in_background": true,
+      "show_synced_tabs_button": false,
+      "show_trash_can": false,
+      "stacking": {
+        "mode": 2,
+        "substrip_locked": false
+      }
+    },
+    "theme": {
+      "active_theme": "Vivaldi5",
+      "schedule": {
+        "o_s": {
+          "dark": "Vivaldi2",
+          "light": "Vivaldi5"
+        }
+      }
+    },
+    "themes": {
+      "system": [
+        {
+          "accentFromPage": false,
+          "accentOnWindow": true,
+          "accentSaturationLimit": 1,
+          "alpha": 1,
+          "backgroundImage": "",
+          "backgroundPosition": "stretch",
+          "blur": 0,
+          "colorAccentBg": "#4b4c53",
+          "colorBg": "#2e2f37",
+          "colorFg": "#d3d9e3",
+          "colorHighlightBg": "#6590fd",
+          "colorWindowBg": "#1D1E21",
+          "contrast": 0,
+          "dimBlurred": false,
+          "engineVersion": 1,
+          "id": "Vivaldi2",
+          "name": "Dark",
+          "preferSystemAccent": false,
+          "radius": 14,
+          "simpleScrollbar": true,
+          "transparencyTabBar": false,
+          "transparencyTabs": false,
+          "url": "",
+          "version": 1
+        },
+        {
+          "accentFromPage": false,
+          "accentOnWindow": true,
+          "accentSaturationLimit": 1,
+          "alpha": 1,
+          "backgroundImage": "",
+          "backgroundPosition": "stretch",
+          "blur": 0,
+          "buttons": {
+            "Back": "/resources/theme/vivaldi/Back.svg",
+            "BreakMode": "/resources/theme/vivaldi/BreakMode.svg",
+            "CalendarStatus": "/resources/theme/vivaldi/CalendarStatus.svg",
+            "CaptureImages": "/resources/theme/vivaldi/CaptureImages.svg",
+            "Clock": "/resources/theme/vivaldi/Clock.svg",
+            "DownloadButton": "/resources/theme/vivaldi/DownloadButton.svg",
+            "Extensions": "/resources/theme/vivaldi/Extensions.svg",
+            "FastForward": "/resources/theme/vivaldi/FastForward.svg",
+            "Forward": "/resources/theme/vivaldi/Forward.svg",
+            "Home": "/resources/theme/vivaldi/Home.svg",
+            "ImagesToggle": "/resources/theme/vivaldi/ImagesToggle.svg",
+            "MailBack": "/resources/theme/vivaldi/MailBack.svg",
+            "MailCompose": "/resources/theme/vivaldi/MailCompose.svg",
+            "MailForward": "/resources/theme/vivaldi/MailForward.svg",
+            "MailMsgArchive": "/resources/theme/vivaldi/MailMsgArchive.svg",
+            "MailMsgArchiveRestore": "/resources/theme/vivaldi/MailMsgArchiveRestore.svg",
+            "MailMsgAttach": "/resources/theme/vivaldi/MailMsgAttach.svg",
+            "MailMsgDiscard": "/resources/theme/vivaldi/MailMsgDiscard.svg",
+            "MailMsgEdit": "/resources/theme/vivaldi/MailMsgEdit.svg",
+            "MailMsgFlag": "/resources/theme/vivaldi/MailMsgFlag.svg",
+            "MailMsgForward": "/resources/theme/vivaldi/MailMsgForward.svg",
+            "MailMsgLabel": "/resources/theme/vivaldi/MailMsgLabel.svg",
+            "MailMsgMove": "/resources/theme/vivaldi/MailMsgMove.svg",
+            "MailMsgReply": "/resources/theme/vivaldi/MailMsgReply.svg",
+            "MailMsgReplyToAll": "/resources/theme/vivaldi/MailMsgReplyToAll.svg",
+            "MailMsgSend": "/resources/theme/vivaldi/MailMsgSend.svg",
+            "MailMsgShowHeaders": "/resources/theme/vivaldi/MailMsgShowHeaders.svg",
+            "MailMsgSpam": "/resources/theme/vivaldi/MailMsgSpam.svg",
+            "MailMsgSpamRestore": "/resources/theme/vivaldi/MailMsgSpamRestore.svg",
+            "MailMsgStatusRead": "/resources/theme/vivaldi/MailMsgStatusRead.svg",
+            "MailMsgStatusUnread": "/resources/theme/vivaldi/MailMsgStatusUnread.svg",
+            "MailMsgTrash": "/resources/theme/vivaldi/MailMsgTrash.svg",
+            "MailMsgTrashRestore": "/resources/theme/vivaldi/MailMsgTrashRestore.svg",
+            "MailReload": "/resources/theme/vivaldi/MailReload.svg",
+            "MailRenderingMethod": "/resources/theme/vivaldi/MailRenderingMethod.svg",
+            "MailRenderingMethodText": "/resources/theme/vivaldi/MailRenderingMethodText.svg",
+            "MailStatus": "/resources/theme/vivaldi/MailStatus.svg",
+            "MailViewLayout": "/resources/theme/vivaldi/MailViewLayout.svg",
+            "MailViewThreading": "/resources/theme/vivaldi/MailViewThreading.svg",
+            "PageActions": "/resources/theme/vivaldi/PageActions.svg",
+            "PanelBookmarks": "/resources/theme/vivaldi/PanelBookmarks.svg",
+            "PanelCalendar": "/resources/theme/vivaldi/PanelCalendar.svg",
+            "PanelContacts": "/resources/theme/vivaldi/PanelContacts.svg",
+            "PanelDownloads": "/resources/theme/vivaldi/PanelDownloads.svg",
+            "PanelFeeds": "/resources/theme/vivaldi/PanelFeeds.svg",
+            "PanelHistory": "/resources/theme/vivaldi/PanelHistory.svg",
+            "PanelMail": "/resources/theme/vivaldi/PanelMail.svg",
+            "PanelNotes": "/resources/theme/vivaldi/PanelNotes.svg",
+            "PanelReadingList": "/resources/theme/vivaldi/PanelReadingList.svg",
+            "PanelSession": "/resources/theme/vivaldi/PanelSession.svg",
+            "PanelTasks": "/resources/theme/vivaldi/PanelTasks.svg",
+            "PanelToggle": "/resources/theme/vivaldi/PanelToggle.svg",
+            "PanelTranslate": "/resources/theme/vivaldi/PanelTranslate.svg",
+            "PanelWeb": "/resources/theme/vivaldi/PanelWeb.svg",
+            "PanelWindow": "/resources/theme/vivaldi/PanelWindow.svg",
+            "Proxy": "/resources/theme/vivaldi/Proxy.svg",
+            "ReadingList": "/resources/theme/vivaldi/ReadingList.svg",
+            "Reload": "/resources/theme/vivaldi/Reload.svg",
+            "Rewind": "/resources/theme/vivaldi/Rewind.svg",
+            "SearchField": "/resources/theme/vivaldi/SearchField.svg",
+            "Settings": "/resources/theme/vivaldi/Settings.svg",
+            "Stop": "/resources/theme/vivaldi/Stop.svg",
+            "SyncStatus": "/resources/theme/vivaldi/SyncStatus.svg",
+            "TilingToggle": "/resources/theme/vivaldi/TilingToggle.svg",
+            "UpdateButton": "/resources/theme/vivaldi/UpdateButton.svg",
+            "WorkspaceButton": "/resources/theme/vivaldi/WorkspaceButton.svg"
+          },
+          "colorAccentBg": "#ededed",
+          "colorBg": "#f6f6f6",
+          "colorFg": "#333333",
+          "colorHighlightBg": "#4ca1f0",
+          "colorWindowBg": "#edeef2",
+          "contrast": 1,
+          "engineVersion": 1,
+          "id": "Vivaldi5",
+          "name": "Subtle",
+          "preferSystemAccent": false,
+          "radius": 4,
+          "transparencyTabBar": false,
+          "transparencyTabs": false,
+          "url": "",
+          "version": 1
+        }
+      ],
+      "user": []
+    },
+    "toolbars": {
+      "navigation": [
+        "Settings",
+        "PanelWidthSpacer",
+        "Back",
+        "Forward",
+        "Reload",
+        "AddressField",
+        "Spacer",
+        "Extensions",
+        "AccountButton"
+      ],
+      "panel": [
+        "PanelBookmarks",
+        "PanelDownloads",
+        "PanelHistory",
+        "PanelReadingList",
+        "Divider",
+        "PanelMail",
+        "PanelContacts",
+        "PanelCalendar",
+        "PanelTasks",
+        "PanelFeeds",
+        "PanelWeb",
+        "FlexibleSpacer"
+      ],
+      "status": [
+        "PanelToggle",
+        "StatusInfo",
+        "VersionInfo",
+        "CaptureImages",
+        "TilingToggle",
+        "PageActions",
+        "Zoom",
+        "Clock"
+      ]
+    },
+    "webpages": {
+      "picture_in_picture_button": {
+        "enabled": true
+      }
+    },
+    "windows": {
+      "show_window_close_confirmation_dialog": false
+    },
+    "workspaces": {
+      "enabled": false
+    }
+  },
+  "webrtc": {
+    "ip_handling_policy": "disable_non_proxied_udp"
+  },
+  "default_search_provider": {
+    "synced_guid": "485bf7d3-0215-45af-87dc-538868000001",
+    "synced_guid_image": "485bf7d3-0215-45af-87dc-538868000002",
+    "synced_guid_private": "485bf7d3-0215-45af-87dc-538868000007",
+    "synced_guid_search_field": "485bf7d3-0215-45af-87dc-538868000001",
+    "synced_guid_search_field_private": "485bf7d3-0215-45af-87dc-538868000007",
+    "synced_guid_speeddials": "485bf7d3-0215-45af-87dc-538868000001",
+    "synced_guid_speeddials_private": "485bf7d3-0215-45af-87dc-538868000007"
+  }
+}
