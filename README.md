@@ -4,9 +4,6 @@
 
 `profman.sh` is a powerful BASH command-line tool for managing Vivaldi browser profiles. It allows you to define a base set of preferences and apply them across multiple profiles, create and restore snapshots, manage bookmarks and context menus, and perform advanced operations like diffing configurations and creating/deleting profiles programmatically.
 
-*Version 0.8 introduces a breaking change, please review the [CHANGELOG.md](CHANGELOG.md) for details*
-
-
 
 ## Features
 
@@ -17,6 +14,18 @@
 - **Settings Export**: Export the configuration from an existing profile to create a new base template.
 - **Housekeeping**: Clean up all generated backup and diff files into a single zip archive.
 - **Cross-Platform**: Works on Linux, macOS, and in WSL for Windows.
+
+## Version Stability 
+
+This script is in "beta mode" which means changes may happen rapidly and some features may not work as expected, but in most cases "works for me". If you have any doubts, please use the `./test.sh` function to verify compatibility with your system, as a first step. Also note that between releases, Vivaldi may introduce their own breaking changes that may cause this script to fail otherwise. This script does not imagine every edge case and there are still some unimplemented convenience features. I'll add any feature changes/bug fixes to the changelog as they happen, and tag major and minor releases for stability.
+
+
+*Version 0.8 introduces a breaking change, please review the [CHANGELOG.md](CHANGELOG.md) for details*
+
+## Contributions
+
+Your ideas are welcome! If you are a BASH junky like me and have some recommended changes, please be sure to also update the test.sh suite with valid test cases and I'll happily include yoru changes after review.
+
 
 ## Default Skeleton
 
@@ -143,6 +152,13 @@ All commands that operate on a profile require the `--profile` argument.
 ---
 
 ### File Replacement Commands
+
+> **Note on Merge vs. Copy**: Unlike the `--deploy` command which intelligently *merges* JSON settings, the `--menus` and `--bookmarks` commands perform a brute-force copy, completely overwriting the target file.
+>
+> - The default `bookmarks.json` skeleton is pristine and nearly empty.
+> - The default `menu_patch.json` skeleton is pre-configured to add "Inspect Element" and "View Source" to web page context menus while removing the "Create QR Code" option.
+>
+> To use your own custom bookmarks or menus, you must manually copy the `Bookmarks` or `contextmenu.json` file from an existing Vivaldi profile into the `profman.sh` project root and rename it to `bookmarks.json` or `menu_patch.json`. An export feature for these files is not yet implemented.
 
 `--menus`
 : Replaces the profile's `contextmenu.json` file with your master `menu_patch.json`. A backup of the original file is created.
