@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated documentation (`README.md`) and tests to reflect the new features.
 
 ### Breaking Changes
+- In version 0.7.x the `--profile` flag acted as both a command and a parameter. In 0.8.x the command function was spun off into the new command `--deploy` and `--deploy-all` while `--profile` now only acts as a parameter for selecting the current working profile.
 - The default skeleton files (`base_pref.skel.json`, `bookmarks.skel.json`) are now more minimal. Deploying them to an existing profile without prior customization will result in a "debloated" UX, which may remove existing themes, bookmarks, and menu items. It is highly recommended to back up or export settings before the first deployment.
 
 ---
