@@ -4,8 +4,10 @@
 
 `profman.sh` is a powerful BASH command-line tool for managing Vivaldi browser profiles. It allows you to define a base set of preferences and apply them across multiple profiles, create and restore snapshots, manage bookmarks and context menus, and perform advanced operations like diffing configurations and creating/deleting profiles programmatically.
 
+* The default skeleton preferences for Profman create a clean debloated UX that you can deploy to all your profiles, or creat your own base template: *
+
 ![ Default Setup ](imgs/clean.png)
-*default settings*
+
 
 
 ## Features
