@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # author: qodeninja (c) 2025 ARR
-# version: 0.3.0
+# version: 0.3.1
 
 # --- Profile Manager Test Suite ---
 #
@@ -208,6 +208,23 @@ test_create_and_delete_profile() {
     return 0
 }
 
+test_confirm_action_abort() {
+    # Setup: Create a dummy preferences file and a snapshot to "restore" from
+    local original_content='{"original": true}'
+    echo "$original_content" > "$PROFMAN_TEST_USER_DATA_PATH/Default/Preferences"
+    touch "$PROFMAN_TEST_USER_DATA_PATH/Default/Preferences.snap.1.2024"
+
+    # Action: Attempt to restore, but pipe 'n' to the confirmation prompt
+    "$PROFMAN_SCRIPT" --profile 0 --restore 1 < <(echo "n") > /dev/null 2>&1
+
+    # Verification: The Preferences file should be unchanged because the action was aborted
+    local current_content
+    current_content=$(cat "$PROFMAN_TEST_USER_DATA_PATH/Default/Preferences")
+    # The file content should be identical to the original
+    [ "$current_content" == "$original_content" ] || { echo " -> FAIL: Preferences file was modified even though confirmation was 'n'."; return 1; }
+    return 0
+}
+
 test_clean_command() {
     # Setup: Create a variety of files that should be cleaned.
     local profile_path="$PROFMAN_TEST_USER_DATA_PATH/Default"
@@ -260,6 +277,7 @@ run_all_tests() {
     run_test "Context menu file replacement" test_menu_replacement
     run_test "Export base preferences" test_export_base
     run_test "Profile create and delete lifecycle" test_create_and_delete_profile
+    run_test "Confirmation prompt aborts action" test_confirm_action_abort
     run_test "Clean command archives all backups" test_clean_command
 
     # Teardown is handled by the trap

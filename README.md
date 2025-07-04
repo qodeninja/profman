@@ -40,7 +40,7 @@ sudo apt-get install jq zip diffutils
 
 **Beta Software**. This script is in active development. Features may change, and Vivaldi updates could introduce breaking changes. Use at your own risk
 
-🔄 *Version 0.8 introduces a breaking change. Please review the [CHANGELOG.md](CHANGELOG.md) for details*
+🔄 *Version 0.8.x introduces a breaking change. Please review the [CHANGELOG.md](CHANGELOG.md) for details*
 
 **Contributions**. If you're a BASH enthusiast, your ideas are welcome! Please update test.sh with relevant test cases when submitting a pull request. 
 

@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1] - 2025-07-04
+
+### Changed
+-   Refactored user confirmation prompts into a single `confirm_action` helper function to improve code maintainability.
+-   Improved the `--clean` command to use `zip --move` for a more robust, atomic archive-and-delete operation.
+
+### Fixed
+-   Added a test case to verify that user-aborted actions (e.g., answering 'n' to a prompt) are correctly cancelled.
+-   Corrected a minor typo in the `README.md`.
+
 ## [0.8.0] - 2025-07-04
 
 ### Changed

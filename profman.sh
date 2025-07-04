@@ -1,6 +1,6 @@
 #!/bin/bash
 # author: qodeninja (c) 2025 ARR
-# version: 0.8.0
+# version: 0.8.1
 
 # --- Vivaldi Profile Manager ---
 #
@@ -106,6 +106,18 @@ find_snapshot_file() {
     echo "$found_file"
 }
 
+# Helper function to prompt for confirmation
+confirm_action() {
+    local prompt_message="$1"
+    echo "$prompt_message"
+    # The -r flag prevents backslash interpretation, -n 1 reads one character.
+    read -p "This action may be irreversible. Are you sure? (y/n) " -n 1 -r
+    echo # Move to a new line
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Aborted."
+        exit 1
+    fi
+}
 # --- Test Environment Detection ---
 # This allows the test suite (test.sh) to override key paths by setting
 # environment variables, ensuring tests are fully isolated and do not affect
@@ -357,13 +369,7 @@ if [ "$CREATE_PROFILE_MODE" = true ]; then # --- Mode: Create Profile ---
         exit 1
     fi
 
-    echo "WARNING: Vivaldi MUST be completely closed before proceeding."
-    read -p "Are you sure you want to create a new profile? (y/n) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Aborted."
-        exit 1
-    fi
+    confirm_action "You are about to create a new Vivaldi profile. Vivaldi MUST be closed."
 
     # Find the next available profile number
     last_num=$(jq -r '.profile.info_cache | keys[] | select(startswith("Profile ")) | ltrimstr("Profile ") | tonumber' "$LOCAL_STATE_FILE" 2>/dev/null | sort -n | tail -n 1)
@@ -481,14 +487,7 @@ elif [ "$RESTORE_MODE" = true ]; then # --- Mode: Restore from Snapshot ---
 
     SNAPSHOT_FILE_TO_RESTORE=$(find_snapshot_file "$VIVALDI_PROFILE_PATH" "$PROFILE_NAME" "$DIFF_ARG1")
 
-    echo "You are about to overwrite the current settings for profile '${PROFILE_NAME}'"
-    echo "with the contents of snapshot #${DIFF_ARG1}."
-    read -p "This action is permanent. Are you sure? (y/n) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Aborted."
-        exit 1
-    fi
+    confirm_action "You are about to overwrite settings for '${PROFILE_NAME}' with snapshot #${DIFF_ARG1}."
 
     # Create a one-time backup before restoring
     BACKUP_BEFORE_RESTORE="${VIVALDI_PREFS_FILE}.before-restore-snap${DIFF_ARG1}"
@@ -718,14 +717,7 @@ elif [ "$MENUS_MODE" = true ]; then # --- Mode: Replace Context Menus ---
         exit 1
     fi
 
-    echo "You are about to overwrite the context menus for profile '${PROFILE_NAME}'."
-    read -p "This action is permanent. Are you sure? (y/n) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Aborted."
-        exit 1
-    fi
-
+    confirm_action "You are about to overwrite the context menus for profile '${PROFILE_NAME}'."
     # Create a backup
     BACKUP_FILE="${CONTEXT_MENU_FILE}.bak-before-patch"
     echo "Backing up current context menu to: $(basename "$BACKUP_FILE")"
@@ -753,14 +745,7 @@ elif [ "$BOOKMARKS_MODE" = true ]; then # --- Mode: Replace Bookmarks ---
         exit 1
     fi
 
-    echo "You are about to overwrite the bookmarks for profile '${PROFILE_NAME}'."
-    read -p "This action is permanent. Are you sure? (y/n) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Aborted."
-        exit 1
-    fi
-
+    confirm_action "You are about to overwrite the bookmarks for profile '${PROFILE_NAME}'."
     # Determine backup file name (e.g., Bookmarks.Default, Bookmarks.1)
     if [ "$PROFILE_NAME" == "Default" ]; then
         BACKUP_FILE="${VIVALDI_BOOKMARKS_FILE}.Default"
