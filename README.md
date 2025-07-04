@@ -46,9 +46,9 @@ sudo apt-get install jq zip diffutils
 
 **Always Backup**. Profman is powerful but opinionated. Before you start, manually back up your Preferences, Bookmarks, and contextmenu.json files for any existing profiles. 
 
-**Nuked Settings**. The default skeleton files are designed to be minimal. They will remove all existing themes, bookmarks, and context menus. Export/Copy your settings first if you want to keep them! 
+**Nuked Settings**. The default skeleton files are designed to be minimal. They will remove all existing themes (except a system dark/light), bookmarks, and context menus. Export/Copy your settings first if you want to keep them! 
 
-**Security & Syncing**. Profman does not manage Vivaldi Sync. Disable syncing before making changes to avoid corruption. Never use Profman to modify encrypted settings, as it can corrupt your profile permanently. **Disable syncing** before making changes to avoid corruption. Never use Profman to modify encrypted settings, as it can corrupt your profile permanently.
+**Security & Syncing**. Profman does not manage Vivaldi Sync. Disable syncing before making changes to avoid corruption. **Disable syncing** before making changes to avoid corruption. Never use Profman to modify encrypted settings, as it can corrupt your profile permanently.
 
 **Test For Portability**. Use `test.sh` to validate Profman's behavior on your OS. Not all features are tested across all systems. Compatibility testing is your responsibility.
 
