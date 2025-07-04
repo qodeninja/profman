@@ -38,7 +38,7 @@ sudo apt-get install jq zip diffutils
 
 ## Important Notes!
 
-**Stability**. This script is in "beta mode" which means changes may happen rapidly and some features may not work as expected, but in most cases "works for me". Also note that between releases, Vivaldi may introduce their own breaking changes that may cause this script to fail otherwise. This script does not imagine every edge case and there are still some unimplemented convenience features. I'll add any feature changes/bug fixes to the changelog as they happen, and tag major and minor releases for stability via versioning.
+**Stability**. This script is in "beta mode" which means changes may happen rapidly and some features may not work as expected, but in most cases "works for me". Also note that between releases, Vivaldi may introduce their own breaking changes that may cause this script to fail otherwise. This script does not imagine every edge case and there are still some unimplemented convenience features. I'll add any feature changes/bug fixes to the changelog as they happen, and tag major and minor releases for stability via versioning. Remember: any sort of advanced tweaking that Profman enables is at your own risk.
 
 > *Version 0.8 introduces a breaking change, please review the [CHANGELOG.md](CHANGELOG.md) for details*
 
@@ -47,6 +47,8 @@ sudo apt-get install jq zip diffutils
 **Always Backup**. Profman has opinions about the "pristine state" of a profile, so it is important that you backup any existing profiles (PREFERENCES), bookmarks (BOOKMARKS), and contextmenu (contextmenu.json) settings you want to preserve. Profman provides mechanisms for creating backups and will do its best to not overwrite original files, but errors can still occur. For first time use, it's recommended you experiment with Profman as described in the Example Workflow so you get a sense of what works and how it works. 
 
 **Nuked**. The default preferences that come preconfigured in the `skel` directory nuke all of the themes except a system light and dark one. If you are running `profman.sh` against an already existing profile, please be sure to export your themes in case they get overwritten. Bookmarks and Context Menu settings are similarly brute force overwritten using the master bookmarks.json and menu_patch.json files which you can configure.
+
+**Security/Syncing**. Profman does not have any direct support for syncing and avoids any preferences for that completely. When making changes to your profiles and preferences make sure syncing is off/disabled first, and do not attempt to enable or configure syncing until after you are done making changes. Some preference data is securely encrypted by Vivaldi and you should NOT attempt to use Profman to overwrite any such preferences, as doing so may invalidate any secure keys or tokens and further disable or corrupt your profile completely. If you corrupt your profile there is no recovery for it. Profman in its default state only attempts to tinker with known UX configuration parameters, however this does not prevent curious folks from making silly mistakes. 
 
 **Test For Portability**. If you have any doubts, please use the `./test.sh` function to verify compatibility with your system. Profman has only been tested (so far) on Debian, PopOS and WSL/Windows! Make sure all features pass on your OS before running commands, especially if you haven't already backed up your files.
 
@@ -87,7 +89,7 @@ sudo apt-get install jq zip diffutils
 
 ### Profile Selection
 
-> **IMPORTANT**: Always ensure Vivaldi is completely closed before running any commands that modify profile data.
+**IMPORTANT: Always ensure Vivaldi is completely closed before running any commands that modify profile data. Do not configure or enable profile syncing until AFTER you're done making the changes you want.**
 
 All commands that operate on a profile require the `--profile` argument.
 
