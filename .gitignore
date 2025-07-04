@@ -3,3 +3,4 @@ local.*
 *.exported.json
 base_pref.json
 menu_patch.json
+bookmarks.json

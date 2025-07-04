@@ -81,7 +81,9 @@ test_initial_file_creation() {
 }
 
 test_local_override_creation() {
-    # Setup: Create a local override file. The base_pref.json should NOT exist yet.
+    # Setup: Ensure base_pref.json does not exist to test its creation logic.
+    # This is necessary because a previous test may have already created it.
+    rm -f "$PROFMAN_TEST_SCRIPT_DIR/base_pref.json"
     echo '{"local_override": true}' > "$PROFMAN_TEST_SCRIPT_DIR/local.base_pref.json"
 
     # Action: Run a simple command that triggers file creation

@@ -1,6 +1,12 @@
+![ Profman Image ](imgs/logo.png)
+
 # Profile Manager for Vivaldi (`profman.sh`)
 
 `profman.sh` is a powerful BASH command-line tool for managing Vivaldi browser profiles. It allows you to define a base set of preferences and apply them across multiple profiles, create and restore snapshots, manage bookmarks and context menus, and perform advanced operations like diffing configurations and creating/deleting profiles programmatically.
+
+![ Default Setup ](imgs/clean.png)
+*default settings*
+
 
 ## Features
 
@@ -25,7 +31,14 @@ On Debian/Ubuntu, you can install them with:
 sudo apt-get update
 sudo apt-get install jq zip diffutils
 ```
-**Important**: Please note that this has only been tested (so far) on Debian, PopOS and WSL, if you have a BASH command prompt you can run `./test.sh` to make sure all features work on your distro.
+
+## Important Notes
+
+**Portability**. Please note that this has only been tested (so far) on Debian, PopOS and WSL/Windows! If you have a BASH command prompt I strongly encourage you to run `./test.sh` to make sure all features pass on your OS before running actual commands.
+
+![ Test Pass Image ](imgs/test.png)
+
+**Skeleton Files**. The default preferences that come preconfigured in the `skel` directory nuke all of the themes except a base light and dark one. If you are running `profman.sh` against an already existing profile, please be sure to export your themes in case they get overwritten. Given the happy path, your Preferences file will automatically be backed up, but better safe than sorry. This also applies to Bookmarks and Context Menu settings as well. 
 
 ## Setup and Configuration
 
@@ -56,6 +69,8 @@ sudo apt-get install jq zip diffutils
 > **IMPORTANT**: Always ensure Vivaldi is completely closed before running any commands that modify profile data.
 
 ## Command Reference
+
+![ Help Usage ](imgs/cmds.png)
 
 ### Profile Selection
 
