@@ -1,22 +1,22 @@
 #!/bin/bash
 # author: qodeninja (c) 2025 ARR
-# version: 0.7.0
+# version: 0.8.0
 
 # --- Vivaldi Profile Manager ---
 #
 # Standard Use Cases:
 #
 # 1. List all available profiles:
-#    ./profman.sh --list
+#    ./profman.sh --list 
 #
-# 2. Apply the base preferences to the default profile:
-#    ./profman.sh --profile 0
+# 2. Deploy (merge) the base preferences to the default profile:
+#    ./profman.sh --profile 0 --deploy
 #
 # 3. Create a timestamped backup of Profile 1's settings:
-#    ./profman.sh --profile 1 --snap
+#    ./profman.sh --profile 1 --snap 
 #
 # 4. Do a "dry run" merge on Profile 2, saving the output to a test file:
-#    ./profman.sh --profile 2 --auto
+#    ./profman.sh --profile 2 --auto --deploy
 #
 # 5. See what has changed in the Default profile since the last merge:
 #    ./profman.sh --profile 0 --diff
@@ -56,8 +56,8 @@ usage() {
   echo "A comprehensive manager for Vivaldi browser profiles."
   echo
   echo "Commands:"
-  echo "  (no command)         Merge base_pref.json into the specified profile."
   echo "  --list               List all available Vivaldi profiles and exit."
+  echo "  --deploy             Merge base_pref.json into the specified profile."
   echo "  --create-profile     Creates a new, numbered Vivaldi profile."
   echo "  --snap               Create a numbered, timestamped snapshot of the profile's Preferences."
   echo "                       (Filename: Preferences.snap.1.YYYYMMDD-HHMMSS)"
@@ -76,12 +76,12 @@ usage() {
   echo
   echo "Destructive Commands:"
   echo "  --delete-profile     Permanently deletes a profile directory and deregisters it."
-  echo "Merge Options:"
-  echo "  --profile <id|name>  Required. Profile to target. Use '0' for Default,"
+  echo "Options:"
+  echo "  --profile <id|name>  Required for most commands. Specifies the target profile. Use '0' for Default,"
   echo "                       '1' for 'Profile 1', etc., or the full name."
-  echo "  --out <file>         Write merged JSON to a specific file instead of modifying"
+  echo "  --out <file>         (For --deploy) Write merged JSON to a specific file instead of modifying"
   echo "                       the profile's Preferences file in-place."
-  echo "  --auto               Automatically name and create a test output file"
+  echo "  --auto               (For --deploy) Automatically name and create a test output file"
   echo "                       (e.g., Preferences.test.1) in the profile directory."
   exit 1
 }
@@ -254,6 +254,7 @@ RESTORE_MODE=false
 DELETE_MODE=false
 MENUS_MODE=false
 BOOKMARKS_MODE=false
+DEPLOY_MODE=false
 DIFF_ARG1=""
 DIFF_ARG2=""
 
@@ -287,6 +288,9 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         --bookmarks)
             BOOKMARKS_MODE=true
+            ;;
+        --deploy)
+            DEPLOY_MODE=true
             ;;
         --export-base)
             EXPORT_BASE_MODE=true
@@ -777,7 +781,7 @@ elif [ "$BOOKMARKS_MODE" = true ]; then # --- Mode: Replace Bookmarks ---
         exit 1
     fi
     exit 0
-else # --- Main Operation: Merge ---
+elif [ "$DEPLOY_MODE" = true ]; then # --- Mode: Deploy (Merge) ---
     # --- Sanity Checks ---
     # Check if the base preferences file exists
     if [ ! -f "$BASE_PREFS_FILE" ]; then
@@ -859,4 +863,9 @@ else # --- Main Operation: Merge ---
             exit 1
         fi
     fi
+else
+    # No action command was given for the specified profile.
+    echo "Error: No action specified for profile '${PROFILE_NAME}'."
+    echo "Please provide an action command, e.g., --deploy, --snap, --clean, etc."
+    usage
 fi

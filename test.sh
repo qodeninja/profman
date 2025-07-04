@@ -126,7 +126,7 @@ test_preference_merge() {
     echo '{ "enable_do_not_track": false }' > "$PROFMAN_TEST_USER_DATA_PATH/Default/Preferences"
     echo '{ "enable_do_not_track": true }' > "$PROFMAN_TEST_SCRIPT_DIR/base_pref.json"
     # Action
-    "$PROFMAN_SCRIPT" --profile 0 > /dev/null 2>&1
+    "$PROFMAN_SCRIPT" --profile 0 --deploy > /dev/null 2>&1
     # Verification
     local result
     result=$(jq -r '.enable_do_not_track' "$PROFMAN_TEST_USER_DATA_PATH/Default/Preferences")

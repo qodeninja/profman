@@ -4,9 +4,7 @@
 
 `profman.sh` is a powerful BASH command-line tool for managing Vivaldi browser profiles. It allows you to define a base set of preferences and apply them across multiple profiles, create and restore snapshots, manage bookmarks and context menus, and perform advanced operations like diffing configurations and creating/deleting profiles programmatically.
 
-* The default skeleton preferences for Profman create a clean debloated UX that you can deploy to all your profiles, or creat your own base template: *
-
-![ Default Setup ](imgs/clean.png)
+*Version 0.8 introduces a breaking change, please review the [CHANGELOG.md] for details*
 
 
 
@@ -19,6 +17,14 @@
 - **Settings Export**: Export the configuration from an existing profile to create a new base template.
 - **Housekeeping**: Clean up all generated backup and diff files into a single zip archive.
 - **Cross-Platform**: Works on Linux, macOS, and in WSL for Windows.
+
+## Default Skeleton
+
+The default skeleton preferences for Profman create a clean debloated UX that you can deploy to all your profiles: 
+
+![ Default Setup ](imgs/clean.png)
+
+
 
 ## Prerequisites
 
@@ -36,7 +42,7 @@ sudo apt-get install jq zip diffutils
 
 ## Important Notes
 
-**Portability**. Please note that this has only been tested (so far) on Debian, PopOS and WSL/Windows! If you have a BASH command prompt I strongly encourage you to run `./test.sh` to make sure all features pass on your OS before running actual commands.
+**Test For Portability**. Please note that this has only been tested (so far) on Debian, PopOS and WSL/Windows! If you have a BASH command prompt I strongly encourage you to run `./test.sh` to make sure all features pass on your OS before running actual commands.
 
 ![ Test Pass Image ](imgs/test.png)
 
@@ -88,11 +94,11 @@ All commands that operate on a profile require the `--profile` argument.
 
 ### Core Commands
 
-`(no command)`
-: The default action. Merges the settings from `base_pref.json` into the specified profile's `Preferences` file.
+`--deploy`
+: Merges the settings from `base_pref.json` into the specified profile's `Preferences` file.
   ```bash
   # Merge base settings into the Default profile
-  ./profman.sh --profile 0
+  ./profman.sh --profile 0 --deploy
   ```
 
 `--list`
@@ -174,7 +180,9 @@ All commands that operate on a profile require the `--profile` argument.
 
 ---
 
-### Merge Options
+### Deploy Options
+
+These options modify the behavior of the `--deploy` command.
 
 `--out <file>`
 : Writes the result of a merge to a specified file instead of modifying the profile's `Preferences` file in-place.
@@ -183,14 +191,14 @@ All commands that operate on a profile require the `--profile` argument.
 : A "dry run" mode. Automatically names and creates a test output file (e.g., `Preferences.test.1`) in the profile directory without modifying the original.
   ```bash
   # Do a dry run merge on Profile 2
-  ./profman.sh --profile 2 --auto
+  ./profman.sh --profile 2 --deploy --auto
   ```
 
 ## Example Workflow
 
 1.  **Initialize**: Run `./profman.sh --list` to generate your config files.
 2.  **Configure**: Open `base_pref.json` and customize the settings to your liking.
-3.  **Apply**: Run `./profman.sh --profile 0` to merge your settings into the Default profile.
+3.  **Apply**: Run `./profman.sh --profile 0 --deploy` to merge your settings into the Default profile.
 4.  **Snapshot**: Create a baseline snapshot: `./profman.sh --profile 0 --snap`.
 5.  **Use Vivaldi**: Launch Vivaldi, use the browser, and change some settings via the UI.
 6.  **Review Changes**: Close Vivaldi and run `./profman.sh --profile 0 --diff` to see exactly what settings were changed by your UI interactions.
