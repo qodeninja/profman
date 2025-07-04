@@ -15,24 +15,11 @@
 - **Housekeeping**: Clean up all generated backup and diff files into a single zip archive.
 - **Cross-Platform**: Works on Linux, macOS, and in WSL for Windows.
 
-## Version Stability 
-
-This script is in "beta mode" which means changes may happen rapidly and some features may not work as expected, but in most cases "works for me". If you have any doubts, please use the `./test.sh` function to verify compatibility with your system, as a first step. Also note that between releases, Vivaldi may introduce their own breaking changes that may cause this script to fail otherwise. This script does not imagine every edge case and there are still some unimplemented convenience features. I'll add any feature changes/bug fixes to the changelog as they happen, and tag major and minor releases for stability.
-
-
-*Version 0.8 introduces a breaking change, please review the [CHANGELOG.md](CHANGELOG.md) for details*
-
-## Contributions
-
-Your ideas are welcome! If you are a BASH junky like me and have some recommended changes, please be sure to also update the test.sh suite with valid test cases and I'll happily include yoru changes after review.
-
-
 ## Default Skeleton
 
 The default skeleton preferences for Profman create a clean debloated UX that you can deploy to all your profiles: 
 
 ![ Default Setup ](imgs/clean.png)
-
 
 
 ## Prerequisites
@@ -51,11 +38,20 @@ sudo apt-get install jq zip diffutils
 
 ## Important Notes
 
-**Test For Portability**. Please note that this has only been tested (so far) on Debian, PopOS and WSL/Windows! If you have a BASH command prompt I strongly encourage you to run `./test.sh` to make sure all features pass on your OS before running actual commands.
+**Version Stability**. This script is in "beta mode" which means changes may happen rapidly and some features may not work as expected, but in most cases "works for me". Also note that between releases, Vivaldi may introduce their own breaking changes that may cause this script to fail otherwise. This script does not imagine every edge case and there are still some unimplemented convenience features. I'll add any feature changes/bug fixes to the changelog as they happen, and tag major and minor releases for stability.
+
+> *Version 0.8 introduces a breaking change, please review the [CHANGELOG.md](CHANGELOG.md) for details*
+
+**Contributions**. Your ideas are welcome! If you are a BASH junky like me and have some recommended changes, please be sure to also update the test.sh suite with valid test cases and I'll happily include yoru changes after review.
+
+**Test For Portability**. If you have any doubts, please use the `./test.sh` function to verify compatibility with your system, as a first step. Profman has only been tested (so far) on Debian, PopOS and WSL/Windows! Make sure all features pass on your OS before running actual commands, especially if you haven't already backed up your files.
 
 ![ Test Pass Image ](imgs/test.png)
 
-**Skeleton Files**. The default preferences that come preconfigured in the `skel` directory nuke all of the themes except a base light and dark one. If you are running `profman.sh` against an already existing profile, please be sure to export your themes in case they get overwritten. Given the happy path, your Preferences file will automatically be backed up, but better safe than sorry. This also applies to Bookmarks and Context Menu settings as well. 
+**Opinionated**. Profman has opinions about the "pristine state" of a profile, so it is important that you backup any existing profiles, bookmarks, and contextmenu settings you want to preserve before running commands. Profman provides mechanisms for creating backups and will do its best to not overwrite original files, but errors can still occur. For first time use, it's recommended you experiment with Profman as described in the Example Workflow so you get a sense of what works and how it works. 
+
+**Themes**. The default preferences that come preconfigured in the `skel` directory nuke all of the themes except a base light and dark one. If you are running `profman.sh` against an already existing profile, please be sure to export your themes in case they get overwritten. Given the happy path, your Preferences file will automatically be backed up, but better safe than sorry. This also applies to Bookmarks and Context Menu settings as well. 
+
 
 ## Setup and Configuration
 
