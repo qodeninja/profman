@@ -190,4 +190,4 @@ To run the tests:
 
 ## License
 
-This project is unlicensed. Feel free to use, modify, and distribute it as you see fit.
+MIT.

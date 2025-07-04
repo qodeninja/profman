@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# --- Vivaldi Profile Manager Test Suite ---
+# author: qodeninja (c) 2025 ARR
+# version: 0.3.0
+
+# --- Profile Manager Test Suite ---
 #
 # This script runs a series of tests against profman.sh to ensure its
 # core functionality is working correctly. It creates a temporary, isolated

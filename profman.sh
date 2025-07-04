@@ -1,6 +1,6 @@
 #!/bin/bash
-
-# version 0.7.0
+# author: qodeninja (c) 2025 ARR
+# version: 0.7.0
 
 # --- Vivaldi Profile Manager ---
 #
