@@ -48,7 +48,7 @@ sudo apt-get install jq zip diffutils
 
 **Nuked Settings**. The default skeleton files are designed to be minimal. They will remove all existing themes (except a system dark/light), bookmarks, and context menus. Export/Copy your settings first if you want to keep them! 
 
-**Security & Syncing**. Profman does not manage Vivaldi Sync. Disable syncing before making changes to avoid corruption. **Disable syncing** before making changes to avoid corruption. Never use Profman to modify encrypted settings, as it can corrupt your profile permanently.
+**Security & Syncing**. Profman does not manage Vivaldi Sync. Disable syncing before making changes to avoid corruption. Never use Profman to modify encrypted settings, as it can corrupt your profile permanently.
 
 **Test For Portability**. Use `test.sh` to validate Profman's behavior on your OS. Not all features are tested across all systems. Compatibility testing is your responsibility.
 
@@ -173,7 +173,7 @@ All commands that operate on a profile require the `--profile` argument.
 ### Advanced & Destructive Commands
 
 `--create-profile`
-: Programmatically creates a new, numbered Vivaldi profile by updating the `Local State` file.
+: Programmatically creates a new, numbered Vivaldi profile by updating the `Local State` file. Note that this function only adds the scaffolding, you'll have to manually open the profile in Vivaldi in order for it to generate its first-run files before adding prefernces to it.
   ```bash
   ./profman.sh --create-profile
   ```
