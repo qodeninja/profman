@@ -38,21 +38,19 @@ sudo apt-get install jq zip diffutils
 
 ## ⚠️ Important Notes!
 
-**Beta Software**. This script is in active development. Features may change, and Vivaldi updates could introduce breaking changes. Use at your own risk
+- **Beta Software**. This script is in active development. Features may change, and Vivaldi updates could introduce breaking changes. Use at your own risk. 🔄 *Version 0.8.x introduces a breaking change. Please review the [CHANGELOG.md](CHANGELOG.md) for details*
 
-🔄 *Version 0.8.x introduces a breaking change. Please review the [CHANGELOG.md](CHANGELOG.md) for details*
+- **Contributions**. If you're a BASH enthusiast, your ideas are welcome! Please update test.sh with relevant test cases when submitting a pull request. 
 
-**Contributions**. If you're a BASH enthusiast, your ideas are welcome! Please update test.sh with relevant test cases when submitting a pull request. 
+- **Always Backup**. Profman is powerful but opinionated. Before you start, manually back up your Preferences, Bookmarks, and contextmenu.json files for any existing profiles. 
 
-**Always Backup**. Profman is powerful but opinionated. Before you start, manually back up your Preferences, Bookmarks, and contextmenu.json files for any existing profiles. 
+- **Nuked Settings**. The default skeleton files are designed to be minimal. They will remove all existing themes (except a system dark/light), bookmarks, and context menus. Export/Copy your settings first if you want to keep them! 
 
-**Nuked Settings**. The default skeleton files are designed to be minimal. They will remove all existing themes (except a system dark/light), bookmarks, and context menus. Export/Copy your settings first if you want to keep them! 
+- **Security & Syncing**. Profman does not manage Vivaldi Sync. Disable syncing before making changes to avoid corruption. Never use Profman to modify encrypted settings, as it can corrupt your profile permanently. ALSO!
 
-**Security & Syncing**. Profman does not manage Vivaldi Sync. Disable syncing before making changes to avoid corruption. Never use Profman to modify encrypted settings, as it can corrupt your profile permanently.
+- **No Extensions**. Extensions are cryptographically tied to each profile's unique ID in order to create a security context. Due to this limitation-by-design you cannot use Profman to manage your extensions or otherwise manually copy them without breaking this security context (leads to a corrupted profile).  On that note, Profman defaults add an Extensions shortcut to the bookmark bar for convenience. 
 
-**Test For Portability**. Use `test.sh` to validate Profman's behavior on your OS. Not all features are tested across all systems. Compatibility testing is your responsibility.
-
-![ Test Pass Image ](imgs/test.png)
+- **Test For Portability**. Use `test.sh` to validate Profman's behavior on your OS. Not all features are tested across all systems. Compatibility testing is your responsibility. ![ Test Pass Image ](imgs/test.png)
 
 ## 🔧 Setup and Configuration
 
