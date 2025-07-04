@@ -5,7 +5,7 @@
 `profman.sh` is a powerful BASH command-line tool for managing Vivaldi browser profiles. It allows you to define a base set of preferences and apply them across multiple profiles, create and restore snapshots, manage bookmarks and context menus, and perform advanced operations like diffing configurations and creating/deleting profiles programmatically. This README file explains the features, patterns and limitations of the tool.
 
 
-## Features
+## ✨ Features
 
 - **Profile Management**: List, create, and permanently delete Vivaldi profiles.
 - **Preference Merging**: Define a `base_pref.json` file and merge its settings into any profile, preserving other settings.
@@ -15,7 +15,7 @@
 - **Housekeeping**: Clean up all generated backup and diff files into a single zip archive.
 - **Cross-Platform**: Works on Linux, macOS, and in WSL for Windows.
 
-## Default Skeleton
+## Default Experience
 
 The default skeleton preferences for Profman create a clean debloated UX that you can deploy to all your profiles out-of-the-box: 
 
@@ -30,59 +30,56 @@ Before using `profman.sh`, you need to have the following command-line utilities
 - `zip`: For the `--clean` command.
 - `diffutils`: For the `--diff` command.
 
-On Debian/Ubuntu, you can install them with:
+On Debian/Ubuntu, you can install them all with:
 ```bash
 sudo apt-get update
 sudo apt-get install jq zip diffutils
 ```
 
-## Important Notes!
+## ⚠️ Important Notes!
 
-**Stability**. This script is in "beta mode" which means changes may happen rapidly and some features may not work as expected, but in most cases "works for me". Also note that between releases, Vivaldi may introduce their own breaking changes that may cause this script to fail otherwise. This script does not imagine every edge case and there are still some unimplemented convenience features. I'll add any feature changes/bug fixes to the changelog as they happen, and tag major and minor releases for stability via versioning. Remember: any sort of advanced tweaking that Profman enables is at your own risk.
+**Beta Software**. This script is in active development. Features may change, and Vivaldi updates could introduce breaking changes. Use at your own risk
 
-> *Version 0.8 introduces a breaking change, please review the [CHANGELOG.md](CHANGELOG.md) for details*
+🔄 *Version 0.8 introduces a breaking change. Please review the [CHANGELOG.md](CHANGELOG.md) for details*
 
-**Contributions**. Your ideas are welcome! If you are a BASH junky like me and have some recommended changes, please be sure to also update the test.sh suite with valid test cases and I'll happily include your changes after review.
+**Contributions**. If you're a BASH enthusiast, your ideas are welcome! Please update test.sh with relevant test cases when submitting a pull request. 
 
-**Always Backup**. Profman has opinions about the "pristine state" of a profile, so it is important that you backup any existing profiles (PREFERENCES), bookmarks (BOOKMARKS), and contextmenu (contextmenu.json) settings you want to preserve. Profman provides mechanisms for creating backups and will do its best to not overwrite original files, but errors can still occur. For first time use, it's recommended you experiment with Profman as described in the Example Workflow so you get a sense of what works and how it works. 
+**Always Backup**. Profman is powerful but opinionated. Before you start, manually back up your Preferences, Bookmarks, and contextmenu.json files for any existing profiles. 
 
-**Nuked**. The default preferences that come preconfigured in the `skel` directory nuke all of the themes except a system light and dark one. If you are running `profman.sh` against an already existing profile, please be sure to export your themes in case they get overwritten. Bookmarks and Context Menu settings are similarly brute force overwritten using the master bookmarks.json and menu_patch.json files which you can configure.
+**Nuked Settings**. The default skeleton files are designed to be minimal. They will remove all existing themes, bookmarks, and context menus. Export/Copy your settings first if you want to keep them! 
 
-**Security/Syncing**. Profman does not have any direct support for syncing and avoids any preferences for that completely. When making changes to your profiles and preferences make sure syncing is off/disabled first, and do not attempt to enable or configure syncing until after you are done making changes. Some preference data is securely encrypted by Vivaldi and you should NOT attempt to use Profman to overwrite any such preferences, as doing so may invalidate any secure keys or tokens and further disable or corrupt your profile completely. If you corrupt your profile there is no recovery for it. Profman in its default state only attempts to tinker with known UX configuration parameters, however this does not prevent curious folks from making silly mistakes. 
+**Security & Syncing**. Profman does not manage Vivaldi Sync. Disable syncing before making changes to avoid corruption. Never use Profman to modify encrypted settings, as it can corrupt your profile permanently. **Disable syncing** before making changes to avoid corruption. Never use Profman to modify encrypted settings, as it can corrupt your profile permanently.
 
-**Test For Portability**. If you have any doubts, please use the `./test.sh` function to verify compatibility with your system. Profman has only been tested (so far) on Debian, PopOS and WSL/Windows! Make sure all features pass on your OS before running commands, especially if you haven't already backed up your files.
+**Test For Portability**. Use `test.sh` to validate Profman's behavior on your OS. Not all features are tested across all systems. Compatibility testing is your responsibility.
 
 ![ Test Pass Image ](imgs/test.png)
 
-## Setup and Configuration
+## 🔧 Setup and Configuration
 
-1.  **Permissions**: Make the scripts executable:
+1.  **Make Scripts Executable**:
     ```bash
-    chmod +x profman.sh
-    chmod +x test.sh
+    chmod +x profman.sh test.sh
     ```
 
-2.  **Path Configuration**: The script needs to know where your Vivaldi "User Data" directory is.
-    -   **For WSL (Windows Subsystem for Linux)**: The script will automatically detect WSL. You must set the `WIN_USER_ROOT` environment variable to point to your Windows user folder. Add this to your `.bashrc` or `.zshrc`:
+2.  **Configure Vivaldi Path**: The script needs to find your Vivaldi "User Data" directory.
+    -   **WSL**: The script auto-detects WSL. Just set the `WIN_USER_ROOT` environment variable in your `.bashrc` or `.zshrc`:
         ```bash
         export WIN_USER_ROOT="/mnt/c/Users/YourWindowsUsername"
         ```
-    -   **For Linux/macOS**: Open `profman.sh` in a text editor and modify the `VIVALDI_USER_DATA_PATH_MANUAL` variable to the correct path for your system.
+    -   **Linux/macOS**: Edit `profman.sh` and set the `VIVALDI_USER_DATA_PATH_MANUAL` variable to the correct absolute path.
 
-3.  **Initial Run & Configuration Files**: The first time you run the script (e.g., with `./profman.sh --list`), it will automatically generate the following user-editable configuration files in the same directory as the script:
-    -   `base_pref.json`: Your master preferences file. Edit this to define the settings you want to apply to your profiles.
-    -   `bookmarks.json`: Your master bookmarks file. Used by the `--bookmarks` command.
-    -   `menu_patch.json`: Your master context menu file. Used by the `--menus` command.
+3.  **Generate Config Files**: Run the script for the first time to create your master configuration files (`base_pref.json`, `bookmarks.json`, `menu_patch.json`).
+    ```bash
+    ./profman.sh --list
+    ```
+    The script will not overwrite these files once they exist, so you can customize them freely.
 
-    Once these master files are in place, ProfMan will not attempt to recreate or overwrite them. This is useful especially when you have customized master files you want to use instead.
-    
-    **Local Override**:
-    To maintain your own starting skel template for preferences without modifying the `skel` directory, you can create a file named `local.base_pref.json` in the same directory as the script. If this file exists when `base_pref.json` is being created for the first time, it will be used as the source instead of the default `skel/base_pref.skel.json`.
+### Configuration Overrides
 
-    **Bookmark/Menu Prefs**:
-    Since Bookmarks and ContextMenu preferences use brute-force copy, there really isn't a need to override them since you can just add your own bookmarks.json and menu_patch.json to the project directory. 
+-   **Local Preferences**: To use your own starting template for `base_pref.json`, create a file named `local.base_pref.json` in the project root. If this file exists during the initial run, it will be used as the source instead of the default skeleton.
+-   **Bookmarks & Menus**: To use your own master files, simply place your customized `bookmarks.json` and `menu_patch.json` in the project root before the initial run.
 
-## Command Reference
+## 💻 Command Reference
 
 ![ Help Usage ](imgs/cmds.png)
 
@@ -153,12 +150,11 @@ All commands that operate on a profile require the `--profile` argument.
 
 ### File Replacement Commands
 
-> **Note on Merge vs. Copy**: Unlike the `--deploy` command which intelligently *merges* JSON settings, the `--menus` and `--bookmarks` commands perform a brute-force copy, completely overwriting the target file.
->
+> **⚠️ Note on Merge vs. Copy**
+> Unlike the `--deploy` command which intelligently *merges* settings, the `--menus` and `--bookmarks` commands perform a brute-force copy, completely overwriting the target file.
 > - The default `bookmarks.json` skeleton is pristine and nearly empty.
-> - The default `menu_patch.json` skeleton is pre-configured to add "Inspect Element" and "View Source" to web page context menus while removing the "Create QR Code" option.
->
-> To use your own custom bookmarks or menus, you must manually copy the `Bookmarks` or `contextmenu.json` file from an existing Vivaldi profile into the `profman.sh` project root and rename it to `bookmarks.json` or `menu_patch.json`. An export feature for these files is not yet implemented.
+> - The default `menu_patch.json` skeleton adds "Inspect Element" and "View Source" to context menus while removing the "Create QR Code" option.
+> - To use your own custom files, manually copy them into the project root and rename them. An export feature is not yet implemented.
 
 `--menus`
 : Replaces the profile's `contextmenu.json` file with your master `menu_patch.json`. A backup of the original file is created.
@@ -210,7 +206,7 @@ These options modify the behavior of the `--deploy` command.
   ./profman.sh --profile 2 --deploy --auto
   ```
 
-## Example Workflow
+## 🏃‍♂️Example Workflow
 
 1.  **Initialize**: Run `./profman.sh --list` to generate your config files.
 2.  **Configure**: Open `base_pref.json` and customize the settings to your liking.
@@ -220,7 +216,7 @@ These options modify the behavior of the `--deploy` command.
 6.  **Review Changes**: Close Vivaldi and run `./profman.sh --profile 0 --diff` to see exactly what settings were changed by your UI interactions.
 7.  **Update Base Config**: If you like the changes, use `./profman.sh --export-base 0` and review the exported file to update your `base_pref.json`.
 
-## Testing
+## ✅ Testing
 
 The project includes a test suite to verify its core functionality. It runs in a temporary, isolated environment and will not affect your real Vivaldi data.
 
