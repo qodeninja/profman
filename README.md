@@ -71,22 +71,23 @@ sudo apt-get install jq zip diffutils
     -   `base_pref.json`: Your master preferences file. Edit this to define the settings you want to apply to your profiles.
     -   `bookmarks.json`: Your master bookmarks file. Used by the `--bookmarks` command.
     -   `menu_patch.json`: Your master context menu file. Used by the `--menus` command.
-  
+
+    Once these master files are in place, ProfMan will not attempt to recreate or overwrite them. This is useful especially when you have customized master files you want to use instead.
     
+    **Local Override**:
+    To maintain your own starting skel template for preferences without modifying the `skel` directory, you can create a file named `local.base_pref.json` in the same directory as the script. If this file exists when `base_pref.json` is being created for the first time, it will be used as the source instead of the default `skel/base_pref.skel.json`.
 
-    **Customizing the Base Template**:
-    To maintain your own starting template for preferences without modifying the `skel` directory, you can create a file named `local.base_pref.json` in the same directory as the script. If this file exists when `base_pref.json` is being created for the first time, it will be used as the source instead of the default `skel/base_pref.skel.json`.
-
-    **Customization Hack**:
-    Currently Bookmarks and Menus dont allow for a local override (yet). But if you absolutely need to configure these for your needs just make a backup of the /skel directory and update the skel files as needed. The skel files are there to be non-deletable files, so its important to keepup a backup of your last known working copies in case something goes amiss. 
-
-> **IMPORTANT**: Always ensure Vivaldi is completely closed before running any commands that modify profile data.
+    **Bookmark/Menu Prefs**:
+    Since Bookmarks and ContextMenu preferences use brute-force copy, there really isn't a need to override them since you can just add your own bookmarks.json and menu_patch.json to the project directory. 
 
 ## Command Reference
 
 ![ Help Usage ](imgs/cmds.png)
 
+
 ### Profile Selection
+
+> **IMPORTANT**: Always ensure Vivaldi is completely closed before running any commands that modify profile data.
 
 All commands that operate on a profile require the `--profile` argument.
 
