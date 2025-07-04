@@ -1,6 +1,6 @@
 #!/bin/bash
 # author: qodeninja (c) 2025 ARR
-# version: 0.8.1
+# version: 0.8.2
 
 # --- Vivaldi Profile Manager ---
 #
@@ -59,9 +59,11 @@ usage() {
   echo "  --list               List all available Vivaldi profiles and exit."
   echo "  --deploy             Merge base_pref.json into the specified profile."
   echo "  --create-profile     Creates a new, numbered Vivaldi profile."
+  echo "  --deploy-all         Run --deploy, --bookmarks, and --menus for the profile."
   echo "  --snap               Create a numbered, timestamped snapshot of the profile's Preferences."
   echo "                       (Filename: Preferences.snap.1.YYYYMMDD-HHMMSS)"
-  echo "  --restore <snap_num> Replaces a profile's settings with a specific snapshot."
+  echo "  --restore <snap_num|original>"
+  echo "                       Replaces a profile's settings with a specific snapshot or the original pre-deploy backup."
   echo "  --diff [n1] [n2]     Compare preferences. With no args, compares current vs. last"
   echo "                       backup. With one arg (n1), compares current vs. snapshot n1,"
   echo "                       and with two args (n1, n2), compares snapshot n1 vs. n2."
@@ -267,6 +269,7 @@ DELETE_MODE=false
 MENUS_MODE=false
 BOOKMARKS_MODE=false
 DEPLOY_MODE=false
+DEPLOY_ALL_MODE=false
 DIFF_ARG1=""
 DIFF_ARG2=""
 
@@ -289,7 +292,7 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         --restore)
             RESTORE_MODE=true
-            DIFF_ARG1="$2" # Re-use DIFF_ARG1 for the snapshot number
+            DIFF_ARG1="$2" # Re-use DIFF_ARG1 for the snapshot number or 'original'
             shift # past argument
             ;;
         --delete-profile)
@@ -303,6 +306,9 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         --deploy)
             DEPLOY_MODE=true
+            ;;
+        --deploy-all)
+            DEPLOY_ALL_MODE=true
             ;;
         --export-base)
             EXPORT_BASE_MODE=true
@@ -481,21 +487,48 @@ if [ "$EXPORT_BASE_MODE" = true ]; then # --- Mode: Export Base ---
     exit 0
 elif [ "$RESTORE_MODE" = true ]; then # --- Mode: Restore from Snapshot ---
     if [ -z "$DIFF_ARG1" ]; then
-        echo "Error: --restore requires a snapshot number."
+        echo "Error: --restore requires a snapshot number or the keyword 'original'."
         usage
     fi
 
-    SNAPSHOT_FILE_TO_RESTORE=$(find_snapshot_file "$VIVALDI_PROFILE_PATH" "$PROFILE_NAME" "$DIFF_ARG1")
+    file_to_restore=""
+    restore_source_desc=""
 
-    confirm_action "You are about to overwrite settings for '${PROFILE_NAME}' with snapshot #${DIFF_ARG1}."
+    if [[ "$DIFF_ARG1" == "original" ]]; then
+        restore_source_desc="the original pre-deploy backup"
+        if [ "$PROFILE_NAME" == "Default" ]; then
+            file_to_restore="${VIVALDI_PREFS_FILE}.Default"
+        else
+            profile_id=${PROFILE_NAME/Profile /}
+            file_to_restore="${VIVALDI_PREFS_FILE}.${profile_id}"
+        fi
+
+        if [ ! -f "$file_to_restore" ]; then
+            echo "Error: Original backup file not found for profile '${PROFILE_NAME}'."
+            echo "       Expected at: $(basename "$file_to_restore")"
+            echo "       An original backup is created the first time you run --deploy on a profile."
+            exit 1
+        fi
+    else
+        restore_source_desc="snapshot #${DIFF_ARG1}"
+        file_to_restore=$(find_snapshot_file "$VIVALDI_PROFILE_PATH" "$PROFILE_NAME" "$DIFF_ARG1")
+    fi
+
+    confirm_action "You are about to overwrite settings for '${PROFILE_NAME}' with ${restore_source_desc}."
 
     # Create a one-time backup before restoring
-    BACKUP_BEFORE_RESTORE="${VIVALDI_PREFS_FILE}.before-restore-snap${DIFF_ARG1}"
+    backup_id_part=""
+    if [[ "$DIFF_ARG1" == "original" ]]; then
+        backup_id_part="original"
+    else
+        backup_id_part="snap${DIFF_ARG1}"
+    fi
+    BACKUP_BEFORE_RESTORE="${VIVALDI_PREFS_FILE}.before-restore-${backup_id_part}"
     echo "Backing up current settings to: $(basename "$BACKUP_BEFORE_RESTORE")"
     cp "$VIVALDI_PREFS_FILE" "$BACKUP_BEFORE_RESTORE"
 
-    echo "Restoring from $(basename "$SNAPSHOT_FILE_TO_RESTORE")..."
-    if cp "$SNAPSHOT_FILE_TO_RESTORE" "$VIVALDI_PREFS_FILE"; then
+    echo "Restoring from $(basename "$file_to_restore")..."
+    if cp "$file_to_restore" "$VIVALDI_PREFS_FILE"; then
         echo "Successfully restored settings for profile '${PROFILE_NAME}'."
     else
         echo "Error: Failed to restore snapshot. Your previous settings are safe in the backup file."
@@ -848,6 +881,92 @@ elif [ "$DEPLOY_MODE" = true ]; then # --- Mode: Deploy (Merge) ---
             exit 1
         fi
     fi
+elif [ "$DEPLOY_ALL_MODE" = true ]; then # --- Mode: Deploy All ---
+    echo "--- Running Full Deployment for profile '${PROFILE_NAME}' ---"
+
+    # --- File Paths ---
+    VIVALDI_BOOKMARKS_FILE="${VIVALDI_PROFILE_PATH}/Bookmarks"
+    CONTEXT_MENU_FILE="${VIVALDI_PROFILE_PATH}/contextmenu.json"
+
+    # --- Sanity Checks for all three actions BEFORE prompting ---
+    # Deploy checks
+    [ -f "$BASE_PREFS_FILE" ] || { echo "Error: Base preferences file not found at: $BASE_PREFS_FILE"; exit 1; }
+    [ -f "$VIVALDI_PREFS_FILE" ] || { echo "Error: Vivaldi Preferences file not found at: $VIVALDI_PREFS_FILE"; exit 1; }
+    # Bookmarks checks
+    [ -f "$BOOKMARKS_FILE" ] || { echo "Error: Base bookmarks file not found at: $BOOKMARKS_FILE"; exit 1; }
+    [ -f "$VIVALDI_BOOKMARKS_FILE" ] || { echo "Error: Vivaldi Bookmarks file not found at: $VIVALDI_BOOKMARKS_FILE"; exit 1; }
+    # Menus checks
+    [ -f "$MENU_PATCH_FILE" ] || { echo "Error: Base menu file not found at: $MENU_PATCH_FILE"; exit 1; }
+    [ -f "$CONTEXT_MENU_FILE" ] || { echo "Error: Context menu file not found for profile '${PROFILE_NAME}'."; exit 1; }
+
+    # Single confirmation for all actions
+    confirm_action "You are about to deploy Preferences, Bookmarks, and Menus to profile '${PROFILE_NAME}'."
+
+    # --- Action 1: Deploy Preferences (Merge) ---
+    echo
+    echo "Step 1: Merging Preferences..."
+    TEMP_FILE=$(mktemp)
+    # shellcheck disable=SC2064
+    trap 'rm -f "$TEMP_FILE"' EXIT
+
+    if [ "$PROFILE_NAME" == "Default" ]; then
+        BACKUP_FILE="${VIVALDI_PREFS_FILE}.Default"
+    else
+        BACKUP_FILE="${VIVALDI_PREFS_FILE}.${PROFILE_NAME/Profile /}"
+    fi
+
+    if [ ! -f "$BACKUP_FILE" ]; then
+        cp "$VIVALDI_PREFS_FILE" "$BACKUP_FILE"
+        echo "  - Backup of original Preferences created at $(basename "$BACKUP_FILE")"
+    else
+        echo "  - Backup file for Preferences already exists. Skipping backup."
+    fi
+
+    if jq -s '.[0] * .[1]' "$VIVALDI_PREFS_FILE" "$BASE_PREFS_FILE" > "$TEMP_FILE" && [ -s "$TEMP_FILE" ]; then
+        mv "$TEMP_FILE" "$VIVALDI_PREFS_FILE"
+        echo "  - Successfully updated Vivaldi preferences."
+    else
+        echo "  - Error: Merging preferences failed. Aborting full deployment."
+        exit 1
+    fi
+
+    # --- Action 2: Replace Bookmarks ---
+    echo
+    echo "Step 2: Replacing Bookmarks..."
+    if [ "$PROFILE_NAME" == "Default" ]; then
+        BOOKMARKS_BACKUP_FILE="${VIVALDI_BOOKMARKS_FILE}.Default"
+    else
+        BOOKMARKS_BACKUP_FILE="${VIVALDI_BOOKMARKS_FILE}.${PROFILE_NAME/Profile /}"
+    fi
+
+    echo "  - Backing up current bookmarks to: $(basename "$BOOKMARKS_BACKUP_FILE")"
+    cp "$VIVALDI_BOOKMARKS_FILE" "$BOOKMARKS_BACKUP_FILE"
+
+    echo "  - Replacing bookmarks with contents from '$(basename "$BOOKMARKS_FILE")'..."
+    if cp "$BOOKMARKS_FILE" "$VIVALDI_BOOKMARKS_FILE"; then
+        echo "  - Successfully replaced bookmarks."
+    else
+        echo "  - Error: Failed to replace bookmarks. Your previous bookmarks are safe in the backup file."
+        # This is not a fatal error for the whole process, so we just warn and continue.
+    fi
+
+    # --- Action 3: Replace Context Menus ---
+    echo
+    echo "Step 3: Replacing Context Menus..."
+    MENU_BACKUP_FILE="${CONTEXT_MENU_FILE}.bak-before-patch"
+    echo "  - Backing up current context menu to: $(basename "$MENU_BACKUP_FILE")"
+    cp "$CONTEXT_MENU_FILE" "$MENU_BACKUP_FILE"
+
+    echo "  - Replacing context menus with contents from '$(basename "$MENU_PATCH_FILE")'..."
+    if cp "$MENU_PATCH_FILE" "$CONTEXT_MENU_FILE"; then
+        echo "  - Successfully replaced context menus."
+    else
+        echo "  - Error: Failed to replace context menus. Your previous menus are safe in the backup file."
+    fi
+
+    echo
+    echo "--- Full Deployment for profile '${PROFILE_NAME}' complete. ---"
+    exit 0
 else
     # No action command was given for the specified profile.
     echo "Error: No action specified for profile '${PROFILE_NAME}'."

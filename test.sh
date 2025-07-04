@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # author: qodeninja (c) 2025 ARR
-# version: 0.3.1
+# version: 0.3.2
 
 # --- Profile Manager Test Suite ---
 #
@@ -42,6 +42,40 @@ setup_test_env() {
     echo '{"roots":{"bookmark_bar":{"children":[{"name":"Original"}]}}}' > "$PROFMAN_TEST_USER_DATA_PATH/Default/Bookmarks"
     # Create a dummy profile contextmenu file to be backed up and replaced
     echo '[{"action":"page","children":[{"action":"Original.Action"}]}]' > "$PROFMAN_TEST_USER_DATA_PATH/Default/contextmenu.json"
+}
+
+test_deploy_all() {
+    # Setup:
+    # Manually create the user-editable config files with the expected content for this test.
+    # This ensures the test is isolated and not affected by state from previous tests.
+    echo '{"vivaldi":{"some_setting":true}}' > "$PROFMAN_TEST_SCRIPT_DIR/base_pref.json"
+    echo '{"roots":{"bookmark_bar":{"children":[{"name":"Skel"}]}}}' > "$PROFMAN_TEST_SCRIPT_DIR/bookmarks.json"
+    echo '[{"action":"page","children":[{"action":"Skel.Action"}]}]' > "$PROFMAN_TEST_SCRIPT_DIR/menu_patch.json"
+    # Create a dummy target Preferences file for the merge to happen.
+    echo '{"vivaldi":{"some_setting":false}}' > "$PROFMAN_TEST_USER_DATA_PATH/Default/Preferences"
+    # Note: The dummy Bookmarks and contextmenu.json files are already created by setup_test_env.
+    # Action: Run with 'yes' to auto-confirm the prompt
+    "$PROFMAN_SCRIPT" --profile 0 --deploy-all < <(yes) > /dev/null 2>&1
+
+    # Verification 1: Preferences were merged
+    local pref_content
+    pref_content=$(jq -r '.vivaldi.some_setting' "$PROFMAN_TEST_USER_DATA_PATH/Default/Preferences")
+    [ "$pref_content" == "true" ] || { echo " -> FAIL: Preferences were not merged. Value was '$pref_content'."; return 1; }
+    [ -f "$PROFMAN_TEST_USER_DATA_PATH/Default/Preferences.Default" ] || { echo " -> FAIL: Preferences backup not created."; return 1; }
+
+    # Verification 2: Bookmarks were replaced
+    local bookmark_content
+    bookmark_content=$(jq -r '.roots.bookmark_bar.children[0].name' "$PROFMAN_TEST_USER_DATA_PATH/Default/Bookmarks")
+    [ "$bookmark_content" == "Skel" ] || { echo " -> FAIL: Bookmarks were not replaced. Content was '$bookmark_content'."; return 1; }
+    [ -f "$PROFMAN_TEST_USER_DATA_PATH/Default/Bookmarks.Default" ] || { echo " -> FAIL: Bookmarks backup not created."; return 1; }
+
+    # Verification 3: Menus were replaced
+    local menu_content
+    menu_content=$(jq -r '.[0].children[0].action' "$PROFMAN_TEST_USER_DATA_PATH/Default/contextmenu.json")
+    [ "$menu_content" == "Skel.Action" ] || { echo " -> FAIL: Menus were not replaced. Content was '$menu_content'."; return 1; }
+    [ -f "$PROFMAN_TEST_USER_DATA_PATH/Default/contextmenu.json.bak-before-patch" ] || { echo " -> FAIL: Menu backup not created."; return 1; }
+
+    return 0
 }
 
 teardown_test_env() {
@@ -225,6 +259,30 @@ test_confirm_action_abort() {
     return 0
 }
 
+test_restore_original() {
+    # Setup: Manually create the files to simulate a post-deploy state
+    local profile_path="$PROFMAN_TEST_USER_DATA_PATH/Default"
+    local prefs_file="$profile_path/Preferences"
+    local backup_file="$profile_path/Preferences.Default"
+    local original_content='{"is_original":true}'
+    local modified_content='{"is_original":false}'
+
+    echo "$original_content" > "$backup_file"
+    echo "$modified_content" > "$prefs_file"
+
+    # Action: Restore the "original" backup, auto-confirming the prompt
+    "$PROFMAN_SCRIPT" --profile 0 --restore original < <(yes) > /dev/null 2>&1
+
+    # Verification: The Preferences file should now match the original backup
+    local current_content
+    current_content=$(cat "$prefs_file")
+    [ "$current_content" == "$original_content" ] || { echo " -> FAIL: Preferences file was not restored. Content: $current_content"; return 1; }
+
+    # Verification 2: Check that a backup-before-restore was made
+    [ -f "$profile_path/Preferences.before-restore-original" ] || { echo " -> FAIL: Backup before restore was not created."; return 1; }
+    return 0
+}
+
 test_clean_command() {
     # Setup: Create a variety of files that should be cleaned.
     local profile_path="$PROFMAN_TEST_USER_DATA_PATH/Default"
@@ -278,7 +336,9 @@ run_all_tests() {
     run_test "Export base preferences" test_export_base
     run_test "Profile create and delete lifecycle" test_create_and_delete_profile
     run_test "Confirmation prompt aborts action" test_confirm_action_abort
+    run_test "Restore original pre-deploy backup" test_restore_original
     run_test "Clean command archives all backups" test_clean_command
+    run_test "Deploy-all command runs all deployments" test_deploy_all
 
     # Teardown is handled by the trap
 
