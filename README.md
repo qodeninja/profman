@@ -42,6 +42,7 @@ sudo apt-get update
 sudo apt-get install jq zip diffutils
 ```
 
+
 <br>
 
 ## ⚠️ Important Notes!
@@ -63,12 +64,41 @@ sudo apt-get install jq zip diffutils
 
 - **Security & Syncing**. Profman does not manage Vivaldi Sync. Disable syncing before making changes to avoid corruption. Never use Profman to modify encrypted settings, as it can corrupt your profile permanently. ALSO!
 
-- **No Extensions**. Extensions are cryptographically tied to each profile's unique ID in order to create a security context. Due to this limitation-by-design you cannot use Profman to manage your extensions or otherwise manually copy them without breaking this security context (leads to a corrupted profile).  On that note, Profman defaults add an Extensions shortcut to the bookmark bar for convenience. 
+- **Extensions**. Extensions are cryptographically tied to each profile's unique ID in order to create a security context. Due to this limitation-by-design you CANNOT use Profman to manage your extensions or otherwise manually copy them without breaking this security context (leads to a corrupted profile).  On that note, Profman defaults add an Extensions shortcut to the bookmark bar for convenience. 
 
-- **Bookmarks**. Bookmarks use a checksum to verify the contents and timestamp, so you can have a root Bookmark file to use for bookmarks.json so long as youve originally configured it in an active Vivaldi Profile so that the checksum is corrected. Had a few issues with bookmark inconsistencies but it was due to my overriding the checksum value to 0. So now the included `skel/bookmarks.skel.json` is a fully qualifiied base file. By default it will load Extensions and Profile Manager under a `_tools` folder on your bar for easy access.
+- **Bookmarks**. Bookmarks use a checksum to verify the contents and timestamp, so you can have a root Bookmark file to use for bookmarks.json so long as youve originally configured it in an active Vivaldi Profile to generate a correct checksum. (Had a few issues with bookmark inconsistencies but it was due to my overriding the checksum value to 0. So now the included `skel/bookmarks.skel.json` is a fully qualifiied base file.) By default Profman will load Extensions and Profile Manager links under a `_tools` folder on your bar for easy access.
 
 - **Test For Portability**. Use `test.sh` to validate Profman's core behaviors (12 in version 0.8.2) on your OS. Not all features are tested across all systems. Compatibility testing is your responsibility. 
 ![ Test Pass Image ](imgs/test.png)
+
+<br>
+
+## 📃 Configuration Files and Skeletons
+
+`profman` is driven by three user-configurable files located in the project's root directory:
+
+-   `base_pref.json`: Your master set of preferences to merge.
+-   `bookmarks.json`: Your master set of bookmarks to deploy.
+-   `menu_patch.json`: Your master context menu configuration.
+
+### First-Run Initialization
+
+When you run `profman` for the first time, it checks if these files exist. If they don't, it automatically creates them for you using a set of default "skeleton" templates from the `skel/` directory. **Once created, these files will not be overwritten.** This allows you to safely edit and customize them.
+
+The general data flow is:
+
+```
+[ Skeletons ]  -> (creates on first run) ->  [ Your Config Files ]  -> (deploys to) -> [ Vivaldi Profile ]
+```
+
+### Overriding the Defaults
+
+You can control which templates are used during this initial creation:
+
+-   **Preferences (`base_pref.json`)**: To use your own custom starting template for preferences, create a file named `local.base_pref.json` in the project root. If this file exists, it will be copied to `base_pref.json` instead of the default skeleton. This is the recommended way to maintain a personal base configuration.
+-   **Bookmarks & Menus**: To use your own master files for bookmarks and menus from the start, simply create your own `bookmarks.json` and `menu_patch.json` in the project root *before* running the script for the first time.
+
+This approach allows you to maintain your own set of master files without ever needing to modify the `skel/` directory, making updates to the script cleaner.
 
 <br>
 
@@ -86,16 +116,17 @@ sudo apt-get install jq zip diffutils
         ```
     -   **Linux/macOS**: Edit `profman.sh` and set the `VIVALDI_USER_DATA_PATH_MANUAL` variable to the correct absolute path.
 
-3.  **Generate Config Files**: Run the script for the first time to create your master configuration files (`base_pref.json`, `bookmarks.json`, `menu_patch.json`).
+3.  **Local Preference Overrides**: If you want to use a `local.base_pref.json` as the source for your generated `base_pref.json` add this to the project base before running any commands. Note that Profman will not backup or version your local configurations so be sure to back them up manually.
+
+4. **Generate Config Files**: Run the script for the first time to create your master configuration files (`base_pref.json`, `bookmarks.json`, `menu_patch.json`).
     ```bash
     ./profman.sh --list
     ```
-    The script will not overwrite these files once they exist, so you can customize them freely.
+    The script will not overwrite these files once they exist, so you can customize them freely. If you need to reset these files at any time you can simply delete them and run the script again.
 
-### Configuration Overrides
+<br>
 
--   **Local Preferences**: To use your own starting template for `base_pref.json`, create a file named `local.base_pref.json` in the project root. If this file exists during the initial run, it will be used as the source instead of the default skeleton.
--   **Bookmarks & Menus**: To use your own master files, simply place your customized `bookmarks.json` and `menu_patch.json` in the project root before the initial run.
+
 
 ## 💻 Command Reference
 
