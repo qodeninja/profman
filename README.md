@@ -53,6 +53,8 @@ sudo apt-get install jq zip diffutils
 
 - **Beta Software**. This script is in active development. Features may change, and Vivaldi updates could introduce breaking changes. Use at your own risk. 
 
+- **Issues**. The Bookmark and Context Menu features have inconsistent issues which means they may not write correctly all the time. I suspect this is because Vivaldi is using sqlite to cache some settings. You may experience some inconsistencies on these features.
+
 - **Contributions**. If you're a BASH enthusiast, your ideas are welcome! Please update test.sh with relevant test cases when submitting a pull request. 
 
 - **Always Backup**. Profman is powerful but opinionated. Before you start, manually back up your Preferences, Bookmarks, and contextmenu.json files for any existing profiles. 
