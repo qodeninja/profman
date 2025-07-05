@@ -65,6 +65,8 @@ sudo apt-get install jq zip diffutils
 
 - **No Extensions**. Extensions are cryptographically tied to each profile's unique ID in order to create a security context. Due to this limitation-by-design you cannot use Profman to manage your extensions or otherwise manually copy them without breaking this security context (leads to a corrupted profile).  On that note, Profman defaults add an Extensions shortcut to the bookmark bar for convenience. 
 
+- **Bookmarks**. Bookmarks use a checksum to verify the contents and timestamp, so you can have a root Bookmark file to use for bookmarks.json so long as youve originally configured it in an active Vivaldi Profile so that the checksum is corrected. Had a few issues with bookmark inconsistencies but it was due to my overriding the checksum value to 0. So now the included `skel/bookmarks.skel.json` is a fully qualifiied base file. By default it will load Extensions and Profile Manager under a `_tools` folder on your bar for easy access.
+
 - **Test For Portability**. Use `test.sh` to validate Profman's core behaviors (12 in version 0.8.2) on your OS. Not all features are tested across all systems. Compatibility testing is your responsibility. 
 ![ Test Pass Image ](imgs/test.png)
 

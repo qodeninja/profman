@@ -1,4 +1,5 @@
 {
+  "_auto":"profman.0.8.2",
   "alternate_error_pages": {
     "enabled": false
   },
@@ -7,9 +8,7 @@
     "profile_enabled": false
   },
   "credentials_enable_service": false,
-  "download": {
-    "default_directory": "D:\\Downloads"
-  },
+
   "enable_do_not_track": true,
   "history": {
     "saving_disabled": false
@@ -32,7 +31,7 @@
     ]
   },
   "translate": {
-    "enabled": true
+    "enabled": false
   },
   "vivaldi": {
     "address_bar": {
@@ -45,28 +44,15 @@
       }
     },
     "appearance": {
-      "density": false,
-      "force_dark_mode_theme": true,
-      "range_buttons": false
+      "force_dark_mode_theme": true
     },
     "bookmarks": {
       "bar": {
-        "sorting": {
-          "sortField": "manually",
-          "sortOrder": 1
-        },
         "visible": true
       },
-      "confirm_adding": false,
-      "language": "en-US",
       "open_in_new_tab": true,
-      "panel": {
-        "sorting": {
-          "sortField": "manually",
-          "sortOrder": 1
-        }
-      },
-
+      "single_click_opens": true
+    },
     "downloads": {
       "open_panel_on_new": false,
       "start_automatically": false
@@ -85,33 +71,23 @@
         "enable": true
       }
     },
-
-    "list": {
-      "selections": {
-        "SETTINGS_TREE": {
-          "anchorId": 3,
-          "leadId": 3,
-          "selectedIds": [
-            3
-          ]
-        }
-      }
-    },
-    "menu": {
-      "display": 0,
-      "icon_type": 1
-    },
-
     "mouse_gestures": {
       "enabled": false,
       "rocker_gestures": {
         "enabled": false
       }
     },
+    "menu": {
+      "display": 0,
+      "compact": true,
+      "icon_type": 1
+    },
+    
     "panels": {
       "web": {
         "elements": []
       },
+
       "window_defaults": {
         "barVisible": true,
         "contentVisible": false,
@@ -163,7 +139,7 @@
           "id": "Vivaldi2",
           "name": "Dark",
           "preferSystemAccent": false,
-          "radius": 2,
+          "radius": 14,
           "simpleScrollbar": true,
           "transparencyTabBar": false,
           "transparencyTabs": false,
@@ -256,7 +232,7 @@
           "id": "Vivaldi5",
           "name": "Subtle",
           "preferSystemAccent": false,
-          "radius": 0,
+          "radius": 4,
           "transparencyTabBar": false,
           "transparencyTabs": false,
           "url": "",
@@ -295,6 +271,8 @@
     "toolbars": {
       "navigation": [
         "Settings",
+        "PanelWidthSpacer",
+        "PanelWidthSpacer",
         "PanelWidthSpacer",
         "Back",
         "Forward",

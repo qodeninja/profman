@@ -106,10 +106,17 @@ run_test() {
 # --- Test Cases ---
 
 test_initial_file_creation() {
+    # Setup: Ensure base_pref.json does not exist, so it will be created from the skeleton.
+    rm -f "$PROFMAN_TEST_SCRIPT_DIR/base_pref.json"
+
     # Action: Run a simple command that triggers file creation
     "$PROFMAN_SCRIPT" --list > /dev/null 2>&1
-    # Verification
+    # Verification: Check that the file was created and has the correct content from the skeleton.
     [ -f "$PROFMAN_TEST_SCRIPT_DIR/base_pref.json" ] || { echo " -> FAIL: base_pref.json not created."; return 1; }
+    local content
+    content=$(jq -r '.vivaldi.some_setting' "$PROFMAN_TEST_SCRIPT_DIR/base_pref.json")
+    [ "$content" == "true" ] || { echo " -> FAIL: base_pref.json content does not match skeleton. Content was '$content'."; return 1; }
+
     [ -f "$PROFMAN_TEST_SCRIPT_DIR/menu_patch.json" ] || { echo " -> FAIL: menu_patch.json not created."; return 1; }
     return 0
 }
@@ -160,11 +167,35 @@ test_preference_merge() {
     echo '{ "enable_do_not_track": false }' > "$PROFMAN_TEST_USER_DATA_PATH/Default/Preferences"
     echo '{ "enable_do_not_track": true }' > "$PROFMAN_TEST_SCRIPT_DIR/base_pref.json"
     # Action
-    "$PROFMAN_SCRIPT" --profile 0 --deploy > /dev/null 2>&1
+    "$PROFMAN_SCRIPT" --profile 0 --deploy < <(yes) > /dev/null 2>&1
     # Verification
     local result
     result=$(jq -r '.enable_do_not_track' "$PROFMAN_TEST_USER_DATA_PATH/Default/Preferences")
     [ "$result" == "true" ] || { echo " -> FAIL: Value was '$result', expected 'true'."; return 1; }
+    return 0
+}
+
+test_preference_merge_adds_new_keys() {
+    # Setup: Preferences file is missing a key that base_pref has.
+    # This tests that the merge operation adds new keys, not just overwrites existing ones.
+    echo '{"vivaldi":{"existing_setting":"foo"}}' > "$PROFMAN_TEST_USER_DATA_PATH/Default/Preferences"
+    echo '{"vivaldi":{"new_setting":"bar", "existing_setting": "overwritten"}}' > "$PROFMAN_TEST_SCRIPT_DIR/base_pref.json"
+
+    # Action
+    "$PROFMAN_SCRIPT" --profile 0 --deploy < <(yes) > /dev/null 2>&1
+
+    # Verification: Both keys should now exist, and the existing one should be updated.
+    local new_content
+    new_content=$(cat "$PROFMAN_TEST_USER_DATA_PATH/Default/Preferences")
+
+    local existing_val
+    existing_val=$(jq -r '.vivaldi.existing_setting' <<< "$new_content")
+    [ "$existing_val" == "overwritten" ] || { echo " -> FAIL: Existing key was not overwritten. Value was '$existing_val'."; return 1; }
+
+    local new_val
+    new_val=$(jq -r '.vivaldi.new_setting' <<< "$new_content")
+    [ "$new_val" == "bar" ] || { echo " -> FAIL: New key was not added. Value was '$new_val'."; return 1; }
+
     return 0
 }
 
@@ -205,17 +236,32 @@ test_menu_replacement() {
 }
 
 test_export_base() {
-    # Setup
+    # Setup:
+    # - Preferences has a 'homepage' to overwrite the template's value.
+    # - Preferences is MISSING 'some_setting', which exists in the template.
+    # This tests both value replacement and key preservation.
     echo '{"vivaldi":{"homepage":"https://example.com"}}' > "$PROFMAN_TEST_USER_DATA_PATH/Default/Preferences"
-    echo '{"vivaldi":{"homepage":""}}' > "$PROFMAN_TEST_SCRIPT_DIR/base_pref.json" # The template to match against
+    echo '{"vivaldi":{"homepage":"", "some_setting": true}}' > "$PROFMAN_TEST_SCRIPT_DIR/base_pref.json"
+
     # Action
     "$PROFMAN_SCRIPT" --export-base 0 > /dev/null 2>&1
+
     # Verification
     local exported_file="$PROFMAN_TEST_SCRIPT_DIR/base_pref.exported.json"
     [ -f "$exported_file" ] || { echo " -> FAIL: Exported file not created."; return 1; }
+
+    local exported_content
+    exported_content=$(cat "$exported_file")
+
+    # Verification 1: Value from Preferences should overwrite template
     local homepage
-    homepage=$(jq -r '.vivaldi.homepage' "$exported_file")
+    homepage=$(jq -r '.vivaldi.homepage' <<< "$exported_content")
     [ "$homepage" == "https://example.com" ] || { echo " -> FAIL: Exported homepage was '$homepage', not 'https://example.com'."; return 1; }
+
+    # Verification 2: Key from template should be preserved if missing in Preferences
+    local some_setting
+    some_setting=$(jq -r '.vivaldi.some_setting' <<< "$exported_content")
+    [ "$some_setting" == "true" ] || { echo " -> FAIL: Key 'some_setting' was not preserved from template. Value was '$some_setting'."; return 1; }
     return 0
 }
 
@@ -330,6 +376,7 @@ run_all_tests() {
     run_test "Initial config file creation" test_initial_file_creation
     run_test "Local override for base_pref.json" test_local_override_creation
     run_test "Preference merge (in-place)" test_preference_merge
+    run_test "Preference merge adds new keys" test_preference_merge_adds_new_keys
     run_test "Bookmark file replacement" test_bookmark_replacement
     run_test "Snapshot creation" test_snapshot_creation
     run_test "Context menu file replacement" test_menu_replacement

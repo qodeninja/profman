@@ -1,32 +1,77 @@
 {
-   "checksum": "00000000000000000000000000000000",
+   "checksum": "bc45e21e9b56ca2288ac1e2d7ae6e453",
    "roots": {
       "bookmark_bar": {
-         "children": [
-
-              {
-                "date_added": "0",
-                "date_last_used": "0",
-                "guid": "aa8e97e7-9462-4342-9cb4-6ae91c2332c1",
-                "id": "2",
-                "meta_info": {
-                    "power_bookmark_meta": ""
-                },
-                "name": "Extensions",
-                "type": "url",
-                "url": "chrome://extensions/"
-              } 
-
-          ],
-         "date_added": "0",
-         "date_modified": "0",
+         "children": [ {
+            "children": [ {
+               "date_added": "13396202400891143",
+               "date_last_used": "0",
+               "guid": "28461ad5-c29a-4ec3-9438-b40b5afa3e46",
+               "id": "3",
+               "meta_info": {
+                  "power_bookmark_meta": ""
+               },
+               "name": "Profile",
+               "type": "url",
+               "url": "chrome://settings/manageProfile"
+            }, {
+               "date_added": "13396202510882076",
+               "date_last_used": "0",
+               "guid": "6559693e-b46a-4b48-a7c1-fd48c480128b",
+               "id": "4",
+               "meta_info": {
+                  "power_bookmark_meta": ""
+               },
+               "name": "Extensions",
+               "type": "url",
+               "url": "chrome://extensions/"
+            } ],
+            "date_added": "13396202470278364",
+            "date_last_used": "0",
+            "date_modified": "13396211674948255",
+            "guid": "f08909e5-c1e4-4588-9e5a-cf5776098ff3",
+            "id": "2",
+            "name": "_tools",
+            "type": "folder"
+         } ],
+         "date_added": "13396202095508023",
+         "date_last_used": "0",
+         "date_modified": "13396211633595537",
          "guid": "0bc5d13f-2cba-5d74-951f-3f233fe6c908",
          "id": "1",
          "name": "Bookmarks",
          "type": "folder"
       },
-      "other": { "children": [], "date_added": "13395919637440608", "date_modified": "0", "guid": "82b081ec-3dd3-529c-8475-ab6c344590dd", "id": "2", "name": "Other bookmarks", "type": "folder" },
-      "trash": { "children": [], "date_added": "13395919637440614", "date_modified": "0", "guid": "9f32a0fb-bfd9-5032-be46-07afe4a25400", "id": "4", "name": "Trash", "type": "folder" }
+      "other": {
+         "children": [  ],
+         "date_added": "13396202095508023",
+         "date_last_used": "0",
+         "date_modified": "0",
+         "guid": "82b081ec-3dd3-529c-8475-ab6c344590dd",
+         "id": "5",
+         "name": "Other bookmarks",
+         "type": "folder"
+      },
+      "synced": {
+         "children": [  ],
+         "date_added": "13396202095508023",
+         "date_last_used": "0",
+         "date_modified": "0",
+         "guid": "4cf2e351-0e85-532b-bb37-df045d8f8d0f",
+         "id": "6",
+         "name": "Mobile bookmarks",
+         "type": "folder"
+      },
+      "trash": {
+         "children": [  ],
+         "date_added": "13396202095508023",
+         "date_last_used": "0",
+         "date_modified": "13396211637741354",
+         "guid": "9f32a0fb-bfd9-5032-be46-07afe4a25400",
+         "id": "7",
+         "name": "Trash",
+         "type": "folder"
+      }
    },
    "version": 1
 }
