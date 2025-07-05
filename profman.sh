@@ -51,6 +51,15 @@
 #    variable in the Configuration section below. If in WSL, ensure the
 #    WIN_USER_ROOT environment variable is set.
 
+
+# --- Color Definitions ---
+# Used for colorizing output messages.
+GREEN=$'\033[0;32m'
+RED=$'\033[0;31m'
+BLUE=$'\033[0;34m'
+GREY=$'\033[0;90m'
+NC=$'\033[0m' # No Color
+
 usage() {
   echo "Usage: $(basename "$0") [command] [options]"
   echo "A comprehensive manager for Vivaldi browser profiles."
@@ -181,22 +190,32 @@ fi
 # If base_pref.json does not exist, create it from a skeleton file.
 # It will prioritize local.base_pref.json if it exists.
 if [ ! -f "$BASE_PREFS_FILE" ]; then
-    echo "Info: 'base_pref.json' not found. Looking for a source to create it..."
+    echo -e "${GREY}Info: 'base_pref.json' not found. Looking for a source to create it...${NC}"
 
     # Determine the source file for the new base_pref.json
     SOURCE_PREFS_FILE=""
     if [ -f "$LOCAL_BASE_PREFS_FILE" ]; then
         SOURCE_PREFS_FILE="$LOCAL_BASE_PREFS_FILE"
-        echo "Found local override: '$(basename "$LOCAL_BASE_PREFS_FILE")'. Using it as the source."
+        echo -e "${GREY}Found local override: '$(basename "$LOCAL_BASE_PREFS_FILE")'. Using it as the source.${NC}"
     elif [ -f "$BASE_PREFS_SKEL_FILE" ]; then
         SOURCE_PREFS_FILE="$BASE_PREFS_SKEL_FILE"
-        echo "Found default skeleton: '$(basename "$BASE_PREFS_SKEL_FILE")'. Using it as the source."
+        echo -e "${GREY}Found default skeleton: '$(basename "$BASE_PREFS_SKEL_FILE")'. Using it as the source.${NC}"
     fi
 
     if [ -n "$SOURCE_PREFS_FILE" ]; then
-        echo "Creating 'base_pref.json'..."
+        echo -e "${GREY}Creating 'base_pref.json' from ($SOURCE_PREFS_FILE)...${NC}"
         if cp "$SOURCE_PREFS_FILE" "$BASE_PREFS_FILE"; then
-            echo "Successfully created '$BASE_PREFS_FILE'. You can now edit this file."
+            # MD5 Sanity Check
+            source_md5=$(md5sum "$SOURCE_PREFS_FILE" | awk '{print $1}')
+            dest_md5=$(md5sum "$BASE_PREFS_FILE" | awk '{print $1}')
+            if [ "$source_md5" == "$dest_md5" ]; then
+                echo "Successfully created '$BASE_PREFS_FILE'. You can now edit this file."
+            else
+                echo "Error: MD5 mismatch after copying '$SOURCE_PREFS_FILE'."
+                echo "       The created file may be corrupt. Please check filesystem and permissions."
+                rm -f "$BASE_PREFS_FILE" # Clean up the corrupt file
+                exit 1
+            fi
         else
             echo "Error: Failed to create '$BASE_PREFS_FILE' from '$(basename "$SOURCE_PREFS_FILE")'. Please check permissions."
             exit 1
@@ -211,11 +230,19 @@ fi
 
 # If bookmarks.json does not exist, create it from the skeleton file.
 if [ ! -f "$BOOKMARKS_FILE" ]; then
-    echo "Info: 'bookmarks.json' not found."
+    echo -e "${GREY}Info: 'bookmarks.json' not found.${NC}"
     if [ -f "$BOOKMARKS_SKEL_FILE" ]; then
-        echo "Creating it from the skeleton file..."
+        echo -e "${GREY}Creating it from the skeleton file...${NC}"
         if cp "$BOOKMARKS_SKEL_FILE" "$BOOKMARKS_FILE"; then
-            echo "Successfully created '$BOOKMARKS_FILE'. You can now edit this file."
+            source_md5=$(md5sum "$BOOKMARKS_SKEL_FILE" | awk '{print $1}')
+            dest_md5=$(md5sum "$BOOKMARKS_FILE" | awk '{print $1}')
+            if [ "$source_md5" == "$dest_md5" ]; then
+                echo "Successfully created '$BOOKMARKS_FILE'. You can now edit this file."
+            else
+                echo "Error: MD5 mismatch after copying bookmarks skeleton."
+                rm -f "$BOOKMARKS_FILE"
+                exit 1
+            fi
         else
             echo "Error: Failed to create '$BOOKMARKS_FILE' from skeleton. Please check permissions."
             exit 1
@@ -229,20 +256,28 @@ fi
 
 # If menu_patch.json does not exist, create it from the skeleton file.
 if [ ! -f "$MENU_PATCH_FILE" ]; then
-    echo "Info: 'menu_patch.json' not found."
+    echo -e "${GREY}Info: 'menu_patch.json' not found.${NC}"
     if [ -f "$MENU_PATCH_SKEL_FILE" ]; then
-        echo "Creating it from the skeleton file..."
+        echo -e "${GREY}Creating it from the skeleton file...${NC}"
         if cp "$MENU_PATCH_SKEL_FILE" "$MENU_PATCH_FILE"; then
-            echo "Successfully created '$MENU_PATCH_FILE'. You can now edit this file."
+            source_md5=$(md5sum "$MENU_PATCH_SKEL_FILE" | awk '{print $1}')
+            dest_md5=$(md5sum "$MENU_PATCH_FILE" | awk '{print $1}')
+            if [ "$source_md5" == "$dest_md5" ]; then
+                echo "Successfully created '$MENU_PATCH_FILE'. You can now edit this file."
+            else
+                echo "Error: MD5 mismatch after copying menu patch skeleton."
+                rm -f "$MENU_PATCH_FILE"
+                exit 1
+            fi
         else
             echo "Error: Failed to create '$MENU_PATCH_FILE' from skeleton. Please check permissions."
             exit 1
         fi
     else
         # This is not a fatal error, as patching menus is an optional feature.
-        echo "Info: Cannot create 'menu_patch.json' because the skeleton file is missing:"
-        echo "      '$MENU_PATCH_SKEL_FILE'"
-        echo "      The --patch-menus command will be unavailable until this is resolved."
+        echo -e "${GREY}Info: Cannot create 'menu_patch.json' because the skeleton file is missing:${NC}"
+        echo -e "${GREY}      '$MENU_PATCH_SKEL_FILE'${NC}"
+        echo -e "${GREY}      The --patch-menus command will be unavailable until this is resolved.${NC}"
     fi
 fi
 
@@ -251,6 +286,12 @@ fi
 if ! command -v jq &> /dev/null; then
     echo "Error: 'jq' is not installed. Please install it first."
     echo "On Debian/Ubuntu: sudo apt-get install jq"
+    exit 1
+fi
+if ! command -v md5sum &> /dev/null; then
+    echo "Error: 'md5sum' is not installed. Please install it first."
+    echo "       It is required for file integrity checks."
+    echo "On Debian/Ubuntu: sudo apt-get install coreutils"
     exit 1
 fi
 
@@ -457,18 +498,19 @@ if [ "$EXPORT_BASE_MODE" = true ]; then # --- Mode: Export Base ---
 
     # This jq filter performs a "deep pick", creating a new JSON object
     # that has the same structure as the template, but with values from the source.
+    # If a key from the template does not exist in the source, it is kept from the template.
     JQ_FILTER='
         def pick(template):
             . as $input | # Capture the current input object (from Preferences)
             if type == "object" and (template | type) == "object" then
                 reduce (template | keys_unsorted[]) as $key ({}; # Start building a new object
-                    # For each key in the template, check if it exists in the input object
+                    # For each key in the template, check if it also exists in the input object
                     if ($input | has($key)) then
-                        # If it exists, add it to our result and recurse into its value
+                        # If it exists in both, add it to our result and recurse into its value
                         . + { ($key): ( ($input[$key]) | pick(template[$key]) ) }
                     else
-                        # Otherwise, keep the result object as is and continue
-                        .
+                        # If it only exists in the template, copy it from the template
+                        . + { ($key): template[$key] }
                     end)
             else
                 $input # For non-objects (leaves), return the original value from Preferences
@@ -619,25 +661,39 @@ elif [ "$DIFF_MODE" = true ]; then # --- Mode: Diff ---
     # shellcheck disable=SC2064
     trap 'rm -f "$DIFF_TEMP_FILE"' EXIT
 
-    # Use process substitution <(...) to feed sorted json to diff. Use -u for a readable format.
-    if ! diff -u <(jq -S . "$FILE1") <(jq -S . "$FILE2") > "$DIFF_TEMP_FILE"; then
-        diff_status=$?
-        if [ $diff_status -eq 1 ]; then
-            # Differences were found, which is not a script error.
-            mv "$DIFF_TEMP_FILE" "$DIFF_OUTPUT_FILE"
-            echo "Differences found. Output saved to: $DIFF_OUTPUT_FILE"
-            read -p "Display the differences now? (y/n) " -n 1 -r
-            echo # move to a new line
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                echo "----------------------------------------"
-                cat "$DIFF_OUTPUT_FILE"
-                echo "----------------------------------------"
-            fi
-        else
-            # An actual error occurred during the diff operation.
-            echo "Error: An error occurred during the diff operation (code: $diff_status)."
-            exit 1 # The trap will clean up the temp file
+    # This jq filter recursively finds all string values and attempts to parse them
+    # as JSON. It uses a robust heuristic (starts/ends with {} or []) to identify
+    # potential nested JSON. The key part is `(try fromjson catch empty) // .`.
+    # If `fromjson` fails on a string that looks like JSON (e.g., a URL template),
+    # `catch empty` prevents an error and produces no output. The `// .` operator
+    # then provides the original string (`.`) as a fallback. This gracefully
+    # handles false positives from the heuristic, leaving them untouched.
+    JQ_UNPACK_FILTER='walk(if type == "string" and ((startswith("{") and endswith("}")) or (startswith("[") and endswith("]"))) then ((try fromjson catch empty) // .) else . end)'
+
+    # Run diff and capture its exit code immediately.
+    # diff returns 0 for no differences, 1 for differences, and >1 for an error.
+    # We pre-process the files with sed to remove trailing commas from objects and arrays.
+    # This is a common issue in Vivaldi's files that causes the strict jq parser to fail.
+    # This sanitization makes the diff operation much more robust.
+    diff -u <(sed -e 's/,\s*\]/]/g' -e 's/,\s*\}/}/g' "$FILE1" | jq -S "$JQ_UNPACK_FILTER") <(sed -e 's/,\s*\]/]/g' -e 's/,\s*\}/}/g' "$FILE2" | jq -S "$JQ_UNPACK_FILTER") > "$DIFF_TEMP_FILE"
+    diff_status=$?
+
+    if [ $diff_status -eq 1 ]; then
+        # Differences were found, which is the expected outcome for a diff.
+        mv "$DIFF_TEMP_FILE" "$DIFF_OUTPUT_FILE"
+        echo "Differences found. Output saved to: $DIFF_OUTPUT_FILE"
+        read -p "Display the differences now? (y/n) " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo "----------------------------------------"
+            # Colorize the diff output for better readability
+            sed -e "s/^\(+.*\)/${GREEN}\1${NC}/" -e "s/^\(-.*\)/${RED}\1${NC}/" "$DIFF_OUTPUT_FILE"
+            echo "----------------------------------------"
         fi
+    elif [ $diff_status -ne 0 ]; then
+        # An actual error occurred during the diff operation (e.g., file not found from jq).
+        echo "Error: An error occurred during the diff operation (code: $diff_status)."
+        exit 1 # The trap will clean up the temp file
     else
         echo "No differences found."
     fi
