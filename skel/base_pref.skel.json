@@ -1,5 +1,4 @@
 {
-  "_auto":"profman.0.8.2",
   "alternate_error_pages": {
     "enabled": false
   },
@@ -8,7 +7,9 @@
     "profile_enabled": false
   },
   "credentials_enable_service": false,
-
+  "download": {
+    "default_directory": "D:\\Downloads"
+  },
   "enable_do_not_track": true,
   "history": {
     "saving_disabled": false
@@ -31,7 +32,7 @@
     ]
   },
   "translate": {
-    "enabled": false
+    "enabled": true
   },
   "vivaldi": {
     "address_bar": {
@@ -44,15 +45,28 @@
       }
     },
     "appearance": {
-      "force_dark_mode_theme": true
+      "density": false,
+      "force_dark_mode_theme": true,
+      "range_buttons": false
     },
     "bookmarks": {
       "bar": {
+        "sorting": {
+          "sortField": "manually",
+          "sortOrder": 1
+        },
         "visible": true
       },
+      "confirm_adding": false,
+      "language": "en-US",
       "open_in_new_tab": true,
-      "single_click_opens": true
-    },
+      "panel": {
+        "sorting": {
+          "sortField": "manually",
+          "sortOrder": 1
+        }
+      },
+
     "downloads": {
       "open_panel_on_new": false,
       "start_automatically": false
@@ -71,22 +85,33 @@
         "enable": true
       }
     },
+
+    "list": {
+      "selections": {
+        "SETTINGS_TREE": {
+          "anchorId": 3,
+          "leadId": 3,
+          "selectedIds": [
+            3
+          ]
+        }
+      }
+    },
+    "menu": {
+      "display": 0,
+      "icon_type": 1
+    },
+
     "mouse_gestures": {
       "enabled": false,
       "rocker_gestures": {
         "enabled": false
       }
     },
-    "menu": {
-      "display": 0,
-      "compact": true,
-      "icon_type": 1
-    },
     "panels": {
       "web": {
         "elements": []
       },
-
       "window_defaults": {
         "barVisible": true,
         "contentVisible": false,
@@ -138,7 +163,7 @@
           "id": "Vivaldi2",
           "name": "Dark",
           "preferSystemAccent": false,
-          "radius": 14,
+          "radius": 2,
           "simpleScrollbar": true,
           "transparencyTabBar": false,
           "transparencyTabs": false,
@@ -231,14 +256,41 @@
           "id": "Vivaldi5",
           "name": "Subtle",
           "preferSystemAccent": false,
-          "radius": 4,
+          "radius": 0,
           "transparencyTabBar": false,
           "transparencyTabs": false,
           "url": "",
           "version": 1
         }
       ],
-      "user": []
+      "user": [
+        {
+          "accentFromPage": false,
+          "accentOnWindow": true,
+          "accentSaturationLimit": 1,
+          "alpha": 0.75,
+          "backgroundImage": "chrome://vivaldi-data/thumbnail/3JGMF52UBEGF4CXAZTO4F6PCH6TYIQA4.webp",
+          "backgroundPosition": "stretch",
+          "blur": 7,
+          "colorAccentBg": "#9db9d7",
+          "colorBg": "#2e3a50",
+          "colorFg": "#ffffff",
+          "colorHighlightBg": "#03c9a9",
+          "colorWindowBg": "#2e3a50",
+          "contrast": 10,
+          "dimBlurred": false,
+          "engineVersion": 1,
+          "id": "43f43072-0345-49b7-8d8f-89a882fa17e2",
+          "name": "Carribian Blueprint",
+          "preferSystemAccent": false,
+          "radius": 0,
+          "simpleScrollbar": true,
+          "transparencyTabBar": true,
+          "transparencyTabs": false,
+          "url": "https://themes.vivaldi.net/themes/P9XvxoqwlOp/status.json",
+          "version": 2
+        }
+      ]
     },
     "toolbars": {
       "navigation": [

@@ -2,9 +2,24 @@
    "checksum": "00000000000000000000000000000000",
    "roots": {
       "bookmark_bar": {
-         "children": [ ],
-         "date_added": "13395919637440606",
-         "date_modified": "13395919379276001",
+         "children": [
+
+              {
+                "date_added": "0",
+                "date_last_used": "0",
+                "guid": "aa8e97e7-9462-4342-9cb4-6ae91c2332c1",
+                "id": "2",
+                "meta_info": {
+                    "power_bookmark_meta": ""
+                },
+                "name": "Extensions",
+                "type": "url",
+                "url": "chrome://extensions/"
+              } 
+
+          ],
+         "date_added": "0",
+         "date_modified": "0",
          "guid": "0bc5d13f-2cba-5d74-951f-3f233fe6c908",
          "id": "1",
          "name": "Bookmarks",

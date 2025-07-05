@@ -750,7 +750,7 @@ elif [ "$MENUS_MODE" = true ]; then # --- Mode: Replace Context Menus ---
         exit 1
     fi
 
-    confirm_action "You are about to overwrite the context menus for profile '${PROFILE_NAME}'."
+    confirm_action "You are about to overwrite the context menus for profile '${PROFILE_NAME}'. Vivaldi MUST be closed."
     # Create a backup
     BACKUP_FILE="${CONTEXT_MENU_FILE}.bak-before-patch"
     echo "Backing up current context menu to: $(basename "$BACKUP_FILE")"
@@ -778,7 +778,7 @@ elif [ "$BOOKMARKS_MODE" = true ]; then # --- Mode: Replace Bookmarks ---
         exit 1
     fi
 
-    confirm_action "You are about to overwrite the bookmarks for profile '${PROFILE_NAME}'."
+    confirm_action "You are about to overwrite the bookmarks for profile '${PROFILE_NAME}'. Vivaldi MUST be closed."
     # Determine backup file name (e.g., Bookmarks.Default, Bookmarks.1)
     if [ "$PROFILE_NAME" == "Default" ]; then
         BACKUP_FILE="${VIVALDI_BOOKMARKS_FILE}.Default"
@@ -853,6 +853,8 @@ elif [ "$DEPLOY_MODE" = true ]; then # --- Mode: Deploy (Merge) ---
         fi
     else
         # --- In-Place Modify Mode ---
+        confirm_action "You are about to merge preferences for profile '${PROFILE_NAME}'. Vivaldi MUST be closed."
+
         echo "Merging '$BASE_PREFS_FILE' into '$VIVALDI_PREFS_FILE'..."
 
         # Determine backup file name (e.g., Preferences.Default, Preferences.1)
@@ -900,7 +902,7 @@ elif [ "$DEPLOY_ALL_MODE" = true ]; then # --- Mode: Deploy All ---
     [ -f "$CONTEXT_MENU_FILE" ] || { echo "Error: Context menu file not found for profile '${PROFILE_NAME}'."; exit 1; }
 
     # Single confirmation for all actions
-    confirm_action "You are about to deploy Preferences, Bookmarks, and Menus to profile '${PROFILE_NAME}'."
+    confirm_action "You are about to deploy Preferences, Bookmarks, and Menus to profile '${PROFILE_NAME}'. Vivaldi MUST be closed."
 
     # --- Action 1: Deploy Preferences (Merge) ---
     echo
